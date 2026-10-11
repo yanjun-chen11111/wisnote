@@ -74,14 +74,18 @@ on one problem for many rounds and still not shipping something good."
   a browser-scoped cookie world), **stop**. Do not write any implementation yet.
   Surface the conflict and the underlying constraint in a single message, then wait
   for a decision.
-- **No silent multi-implementation.** Never try 23 implementations of a contradictory
-  spec on your own. One acknowledged tradeoff △ one decision △ one implementation.
-- **Let the user short-circuit.** If the user says "ノ?暗猭" / "just use the
+- **No silent multi-implementation.** Never try 2-3 implementations of a contradictory
+  spec on your own. One acknowledged tradeoff -> one decision -> one implementation.
+- **Let the user short-circuit.** If the user says "用标准做法" / "just use the
   standard approach" (or clearly has no preference), adopt the canonical industry
   pattern immediately. Do not keep offering alternatives.
 - **Judge by correctness, not flashiness.** "Done" means the chosen approach is the
-  correct, maintainable, production-grade one  not that every literal wish was
+  correct, maintainable, production-grade one - not that every literal wish was
   crammed in. A simple standard solution is a success, not a compromise.
+- **Verify before you document.** Never state a system behavior as fact in docs or
+  replies without having actually run or tested it. If you can only infer it from
+  code, mark it explicitly as a speculation, not a conclusion. This prevents the
+  loop of "documented from intent, then corrected after real testing."
 
 ### Step 1 — Translate intent into the engineering problem
 
