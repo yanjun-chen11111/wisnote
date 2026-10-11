@@ -36,6 +36,14 @@ closing a single tab keeps login (standard web behavior); the security goal
 (URL/history exposure) is fully met. Do not hard-code a brittle tab-close
 detector.
 
+**Pitfall we hit (why this skill has an anti-churn rule):** we first tried to
+satisfy all three wishes with a `visibilitychange` tab-close detector, which
+produced several fragile rewrites before reverting to the plain session cookie.
+The standard answer was right from the start — the churn came from fighting the
+platform model, not from the problem being hard. The lesson: detect the conflict
+in round one and adopt the industry pattern, instead of iterating on a
+contradictory spec.
+
 ---
 
 ## 2. "Two people editing the same note at once will clash"

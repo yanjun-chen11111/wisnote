@@ -45,6 +45,25 @@ is already settled.
 
 Follow these steps for every request.
 
+### Anti-churn rules (must hold before any code is written)
+
+These rules exist specifically to prevent the failure mode of "going back and forth
+on one problem for many rounds and still not shipping something good."
+
+- **Fail fast on contradiction.** The moment two or more requirements conflict given
+  the platform's fundamental model (e.g. "survive refresh" vs "die on tab close" in
+  a browser-scoped cookie world), **stop**. Do not write any implementation yet.
+  Surface the conflict and the underlying constraint in a single message, then wait
+  for a decision.
+- **No silent multi-implementation.** Never try 2¡V3 implementations of a contradictory
+  spec on your own. One acknowledged tradeoff ¡÷ one decision ¡÷ one implementation.
+- **Let the user short-circuit.** If the user says "¥Î?­ã°µªk" / "just use the
+  standard approach" (or clearly has no preference), adopt the canonical industry
+  pattern immediately. Do not keep offering alternatives.
+- **Judge by correctness, not flashiness.** "Done" means the chosen approach is the
+  correct, maintainable, production-grade one ¡X not that every literal wish was
+  crammed in. A simple standard solution is a success, not a compromise.
+
 ### Step 1 ¡ª Translate intent into the engineering problem
 
 Identify the actual engineering domain behind the user's words. Map the literal
