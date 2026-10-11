@@ -1,0 +1,115 @@
+XML > 一对一关系
+
+学习目标
+完成本章内容的学习您将能够:
+
+为含有一对一关系的数据模型创建schema
+在XML schema中为元素或属性添加约束
+在XML schema中定义元素的默认值
+在XML schema中使用次序标识来定义在XML文档中元素的排列次序
+在XML样式表中使用排序元素来对于输出结果进行排序
+在XML样式表中使用if语句
+编写一段将XML文档内容插入关系数据库的java程序
+
+= 概述 =
+在上一章中，我们首先介绍了XML schema、XML文档和样式表的一些新的特点，同时还给出了为一对多关系进行建模的方法。在本章中，我们将对XML schema和XML样式表的特点作更进一步的介绍。同时我们也将介绍XML中的一对一关系的建模，另外，我们将讨论如何编写将XML文档内容插入关系数据库的java程序。
+
+= 一对一关系 =
+
+图4-1 一对一数据模型
+
+= XML schema =
+图4-1中的数据模型表示了一个一对一（1：1）关系。添加了country和destination后便出现了一个一对一关系topDestination。
+每一个country拥有许多不同的destination，但是只有一个top destination。表4-1中的XML
+schema给出了如何在XML schema中定义一个一对一关系的实例。
+
+表 4-1: 一对一关系的XML schema – country_dest.xsd
+下面我们检视一下表4-1中出现的一些新元素和新属性。
+
+元素Country是定义在元素City中的一个复杂类型，其作用是表示国家和其城市的一对多（1：M）关系。
+元素Destination是定义在元素Country中的一个复杂类型，其作用是表示一个国家和其许多目的地之间的一对多关系。
+元素topDestination是一个定义在元素Country中的复杂类型，其作用是表示国家和其首要目的地之间的一对一关系。
+：上章中已经介绍了为属性添加约束的方法，但是对元素而言还有更多潜在的有用约束。例如可以通过在元素或属性上面添加
+某种约束从而影响处理器处理空格字符的方式方法:
+
+约束whiteSpace被定义为“preserve”，这就意味着XML处理器将不会移除任何空格字符。其他有用的约束还包括：
+
+Replace – XML处理器将所有的空格字符用空格来替代：
+<xsd:whiteSpace value="replace"/>
+Collapse – 处理器将移除所有的空格字符：
+<xsd:whiteSpace value="collapse"/>
+Length, maxLength, minLength—元素能够确定的长度或允许的长度范围：
+<xsd:length value="8"/>
+<xsd:minLength value="5"/>
+<xsd:maxLength value="8"/>
+除了能够对于元素添加约束之外，顺序标识可以用来定义元素出现的次序。标识<all>默认规定：子元素可以以任何次序出
+现并且每个子元素仅允许出现一次:
+
+标识<choice>规定在指定的两个子元素中只有一个能够出现:
+
+标识<sequence>规定子元素必须以一个特定的顺序出现:
+
+= XML文档 =
+表4-2中的XML文档显示了如何在XML文档中应用表4-1中XML schema定义的新元素（country和destination）。注意，
+子元素<topDestination>可以按任何次序出现，因为在schema中定义了次序标识<xsd:all>。
+
+表 4-2:一对一关系的XML文档 – country_dest.xml
+
+= XML样式表 =
+
+表 4-3: 一对一关系XML样式表– country_dest.xsl
+表4-3中的样式表介绍了if语句，以及排序元素。
+if语句代码的执行与否取决于对于“test”属性中所描述条件的评估。例如
+<xsl:if test="population &gt;= 10000">
+
+Big Town
+</xsl:if>
+<xsl:if test="population &lt; 10000">
+
+Small Town
+</xsl:if>
+
+运算符的含义
+
+元素<xsl:sort>指定属性的取值可以规定输出结果的排序。
+
+= 利用Java执行SQL插入语句 =
+步骤 1: 为了能够在Java程序中执行SQL语句，我们必须首先建立与数据库的连接。为了建立连接首先要建立一个驱动的实
+例。例如，如果您想要连接到一个PostgreSQL数据库，以下的一行代码便是用来建立驱动实例的:
+
+Class.forName("org.postgresql.jdbc.Driver").newInstance();
+步骤2: 一旦驱动实例建立成功，那么只要知道数据库的url并且拥有有效的用户名和密码，你便可以建立起连接。以下的两
+行代码示范了如何建立连接:
+
+String url = "jdbc:postgresql://localhost:5432/dbName";
+Connection con = DriverManager.getConnection(url,"用户名","密码");
+步骤3: 一旦连接成功建立，便必须创建一个声明。声明可以利用createStatement() 函数进行创建:
+
+Statement stmt = con.createStatement();
+步骤 4: 当您完成上述步骤后，便可以利用java.sql.Statement.execute()方法执行SQL语句。例如:
+
+stmt.execute(“SELECT * FROM city”);
+步骤 5: 当执行完SQL语句后，不要忘记使用Statement.close() 或 Connection.close()方法关闭与数据库的连接。
+
+下面的Java程序给出了如何利用Java执行SQL语句的实例。openConnection() 方法建立了与一个特定数据库的连接并且
+创建了一个Statement对象。closeConnection() 方法结束语句执行并关闭与数据库的连接。insertStatements() 方
+法创建插入语句并执行之。
+
+有关java更详细的信息请参看 Java API.
+PostgreSQL JDBC 连接驱动可以在如下地址下载PostgreSQL JDBC website.
+
+= 总结 =
+Schema设计者可以添加对于元素长度的约束同时定义处理器对于空格字符的处理策略。Schema设计者也可以指定元素的默
+认值。次序标识可以用来指定XML文档中元素的出现顺序。
+
+XML样式表中排序元素可以用来根据特定的元素顺序对输出结果进行排序。另外“if statements”可以用来输出满足某一
+测试条件的元素。
+
+Java程序能够用来解析XML文档，生成并执行SQL插入语句集。
+
+= 练习1.建立一个用来描述一个城市中最受欢迎的餐厅的XML schema。在schema中使用all标识或者choice标识。并检验其良构 =
+性和有效性。
+2.使用schema创建一个XML文档，并且在该XML文档中填充拥有一个最受欢迎以及其他两个或多个餐馆的城市的数据。检验该
+文档的良构性有效性。
+3.编写能够按照名称排序显示最受欢迎的餐馆的XML样式表，前提是餐馆必须坐落在人口数大于5000的城市中。
+4.编写一个Java程序用来解析XML文档，该程序还需要为餐馆实体生成SQL插入语句，并执行这些插入语句。

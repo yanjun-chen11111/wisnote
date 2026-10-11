@@ -1,0 +1,15 @@
+== 历史 ==
+Windows最初是在MS-DOS之上的16位图形外层，这包括了Windows 1.0, 2.0, 3.11。Windows NT开始完全使用NT内核成为32位系统。Windows 95开始，Microsoft开始去除对DOS的依赖最终到Windows 2000彻底去除DOS。
+
+== Windows内核 ==
+Windows 1.0、2.0和3.11常被认为是上一代的Windows，因为它们只是在MS-DOS系统上层堆起了简单的图形用户界面。Windows 95、Windows 98与Windows ME在设计上都绕过MS-DOS（即便DOS仍旧存在），而是基于同一组被称为"9x Kernel"的代码结构。至于Windows NT 4.0、Windows 2000、Windows XP、Windows Vista、Windows 7，还有Windows Server系列，则基于一组名为"NT Kernel"的代码。
+
+== 系统架构 ==
+Windows NT Kernel最底层是文件NTOSKRNL.EXE， 存放在C:\Windows\System32目录下。NTOSKRNL依赖于HAL.DLL，"Hardware Abstraction Layer"，提供了底层机制如中断、BIOS通信。
+底层之上是NTDLL.DLL, WIN32K.SYS。NTDLL包含了很多用户模式下的函数，包括系统调用stub与运行时库（run-time library, RTL）代码，统称为 "Native API"，通常是未公开。WIN32K.SYS是内核模式驱动，实现了窗口与图形。
+更上一层是许多库，称为Win32 API，主要4个.DLL是：
+
+kernel32.DLL：包含与操作系统相关的Win32 API函数。仅是底层NTDLL函数的wrapper。但一些功能如National Language Support (NLS)与console handling是NTDLL所没有的。
+advapi32.DLL：包含其他与操作系统相关的函数如registry与service handling。
+gdi32.DLL：包含画图相关函数。
+user32.DLL：包含许多实现用户接口、程序、消息框、prompts等等。User32调用WIN32K.SYS中的函数来实现其功能。

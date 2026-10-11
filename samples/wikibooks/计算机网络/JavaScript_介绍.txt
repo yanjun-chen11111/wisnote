@@ -1,0 +1,25 @@
+Javascript 是一种以 ECMAScript 为语言标准、形式化的、解释执行的编程语言。Javascript 引擎负责解释执行 Javascript，引擎最常见的形式是嵌入在浏览器中用于执行网页中的 Javascript，但也可以嵌入 Javascript 运行环境（如 node），用来执行任意 Javascript 文件。
+第一个 Javascript 引擎由网景公司开发出来，用于嵌入 Web 浏览器。V8 是一种为了 Google Chrome 浏览器而开发的 Javascript 引擎，它也可以用作独立的解释器。Adobe Flash 使用叫做 ActionScript 的 Javascript 引擎来开发 Flash 程序。
+
+== 初步认识 ==
+更常见的JavaScript是用于客户端的网络编程。
+它的确切名称是ECMAScript。
+它是由网景通讯公司（现在为Mozilla基金会的）研发的。
+
+JavaScript不是Java。Java与JavaScript僅僅都在语法上承襲C語言的風格，但两者互不相干。
+JavaScript不是JScript。JScript和JavaScript的应用范围相似，但两者也是互不相干的。JScript是由微软公司推出的一款编程语言。
+JavaScript不只是网页的编程语言，它和其他编程语言一样复杂，甚至更复杂。
+
+== 与Java的联系 ==
+JavaScript与Java是两种不同的语言，就像印度和印度尼西亚的关系一样。尽管JavaScript跟Java在名字上有着相同的开头，容易令人产生联想。但它们是出自不同的公司，源自不同的目的。网景通讯公司研发了JavaScript而太阳计算机系统公司研发了Java。JavaScript在现在多用于浏览器端的各种应用，而Java则在如今成为服务器端应用的重头语言。JavaScript与Java在语法上有些相似，但这只是因为他们的语法风格都袭自C语言。接下来的一节假定你具有一定编程方面的背景知识，如果你愿意你可以直接进入下一节。
+Java 中的变量具有静态的类型（例如：整数或字符串），它在程序的生命周期中保持不变。而在 JavaScript 中，变量是动态类型的，在程序的生命周期中可以更改。Java 中的变量必须在使用之前声明，而在 JavaScript 中，引用未赋值的变量会得到undefined。
+Java 拥有大量的库，可供导入程序中使用。JavaScript 不提供任何方式来导入库或外部 JavaScript 代码。如果需要其他功能，例如：V8引擎提供的一些基本功能，和许多 Web 浏览器中的文档对象模型，则 JavaScript 引擎需要在ECMAScript语言标准上做进一步的扩展。
+Java 包含类和对象实例，而 JavaScript 使用原型。
+
+在Java中，要输出“Hello world!”，代码是：
+在JavaScript中则是：
+
+== 本书的受众 ==
+本书假设您在使用计算机，Web浏览器，文本编辑器和软件开发环境方面具有丰富的知识和经验。由于您不会在本书中学习 HTML，CSS，Java 或网站设计等相关内容，因此请查阅适当的书籍以了解这些主题。
+
+== 版本历史 ==

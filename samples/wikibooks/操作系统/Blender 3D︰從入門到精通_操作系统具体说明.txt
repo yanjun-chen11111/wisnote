@@ -1,0 +1,72 @@
+这篇指导涵盖了不同操作系统或窗口管理器环境下的用户界面（User Interface）问题。Blender在不同的操作系统（Operating System，如Windows、Mac OS X、Linux），不同窗口管理器（Window Manager，如Gnome、KDE）之下，会呈现一些不同的特点。
+选择关于你的操作系统或窗口管理器的部分阅读，而其他内容可以略过。
+
+== GNU/Linux ==
+ Alt + LMB 用来改变视角，在3D视图的两个轴上进行旋转（因为屏幕显示是二维的，所以只能同时改变两个轴）。这有时会产生冲突，意外地平移窗口而非旋转窗口。使用 Ctrl + Alt + LMB 或者 MMB 替代平移，可以避免此种冲突。(可能，你已经激活了Compiz->Rotate Cube。旋转的默认配置是 Ctrl + Alt + LMB ；你可能不得不更改为合适的配置，以避免冲突）。
+如果你使用KDE，可以通过以下方法解决：在Blender窗口标题栏上右击鼠标 RMB →选择Configure Window Behavior→Actions→Window Actions→Inner Window, Titlebar and Frame→选择Modifier key为 Alt →设置所有选择框为空。另一种方法是：在标题栏上右击鼠标 RMB →选择Advanced →Special Application Settings... →Workarounds→Block global shortcuts→选中Force。
+如果你使用Gnome，可以使用如下方法：System→ Preferences → Window Preferences，寻找最后三个选项Control，Alt和Super。选择Super。之后你就可以按住 Cmd 不放，来旋转窗口，而照常使用Ctrl和Alt
+
+=== KDE ===
+
+在KDE环境下， Ctrl + F1 到 Ctrl + F4 被默认设置成切换从1到4四个工作区（即四个桌面），以更加便捷地管理诸多任务窗口。你可以在系统设置中更改此项。
+
+=== Gnome ===
+在Gnome环境中，你可能想禁用显示指针位置（Find Pointer）功能，否则它将限制你使用某些功能，比如锁定格点（Snap to grid）和套索工具（lasso tool）。如果当你按下并放开 Ctrl ，你的鼠标指针就变成高亮状态（highlighted），这说明显示指针位置功能已经被启用。这时你可以打开系统设置→鼠标和触摸板→将按住Ctrl时显示指针位置一项取消，即可避免这种现象。这项功能默认不开启。
+
+=== Ubuntu ===
+在Ubuntu 9.10之前的版本中，在Blender和Ubuntu的Compiz Fusion加速窗口管理器之间一直存在不兼容问题。默认情况下，Compiz Fusion功能是开启的，导致了诸多问题：由于窗口闪烁，消失，刷新不一致，很难从的中分辨Blender；或者不能从窗口模式启动Blender。
+这个问题的解决方法非常简单：安装compiz-switch（可能在universe中）。然后进入应用程序→附件→Compiz-Switch，以暂时禁用Compiz。当你使用完Blender，只需要再重复操作一次，重新开启Compiz。
+这个问题在之后的版本中不存在。
+
+== Mac OS X ==
+
+Macbook Pro笔记本以及iMac一体机使用的键盘与普通的笔记本、桌面电脑的键盘不同， F1 到 F4 ，加上 F7 到 F12 ，都被用作专门的功能，要是用这些键原本的功能，则需同时按下 Fn 。要增加选择，通常应该按下 Ctrl + UpArrow 。如果空格键被赋予了其他的功能，那么只能用 Ctrl + Alt + UpArrow 。
+
+== Microsoft Windows ==
+
+=== 两种启动Blender的方式 ===
+Blender需要一个控制台（类似于命令提示符的黑色小窗口，有一个闪动的光标输出字符）以显示错误信息。因此，如果你点击桌面、开始菜单、快速启动栏/任务栏上的图标启动Blender，会出现两个窗口：一个图形用户界面，附加一个控制台窗口。关闭任何一个窗口都会导致Blender退出。Windows7以前，在任务栏上，它们的图标是完全一样的，这会导致一些困惑。在Windows7中，由于增加了任务栏窗口预览功能，这种困惑就不存在了。然而，用这种方式启动Blender没有提供任何方式向Blender传递命令行参数。
+从命令提示符（Command prompt）启动Blender增加了额外的工作量，但它克服了以上问题：你不会看到一个与Blender图形界面具有同样任务栏图标的窗口了。
+启动步骤如下
+
+开始 → 运行...
+输入 cmd 并回车
+输入 cd c:\Program Files\Blender Foundation\Blender 并回车
+输入 blender 并回车
+注： Blender 2.6开始解决了这个问题，默认隐藏了控制台窗口。你也可以通过Help→Toggle system console来重新显示控制台窗口。
+
+=== 粘滞键 ===
+这不是Windows独有的功能，Ubuntu等Linux发行版也有此功能。
+连续按五次 Shift 就会激活StickyKeys粘滞键。粘滞键是一种行之有效的方法以改变计算机识别命令方式，但也会带来不少麻烦——按键规则的改变并不适合操作Blender。如果粘滞键对话框出现，你最好选择取消。
+如果你不需要这种辅助功能，你可以禁用粘滞键。方法如下：
+
+开始 → 控制面板
+双击辅助功能
+ LMB  the Keyboard tab
+对粘滞键, 筛选键, and 切换键:
+去掉开启 …复选框
+ LMB 点击设置按钮
+去掉使用快捷方式
+ LMB 确定按钮，设置生效
+ LMB 确定按钮
+
+=== 多种键盘布局 ===
+在有着多种键盘布局的系统中，按下  Shift + Alt  可更换布局（例如，从QWERTY布局变为AZERTY布局）。由于这个问题的存在，本书避免  Shift + Alt  之类的快捷键的出现。
+如果你发现你的键盘布局发生变化，再次按下  Shift + Alt  可以将其变回原布局。
+你也可以通过以下方式禁用快捷键：
+
+开始 → 控制面板
+打开“地区与语言设置”
+ LMB “语言”标签
+ LMB “详细”按钮
+ LMB “键盘设置”按钮
+ LMB “改变键盘顺序”按钮
+去掉勾选“切换键盘布局”
+ LMB “确定”按钮
+
+=== Additional Resources ===
+Input method editor keyboard shortcut (CTRL+SHIFT+0) switches the input language in Vista — Microsoft Support Knowledge-Base
+
+ 维基百科上的StickyKeys。
+
+== 注释 ==

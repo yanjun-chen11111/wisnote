@@ -1,0 +1,60 @@
+维基教科书 > 电脑 > 操作系统 > Windows NT
+
+== 概述 ==
+Microsoft Windows NT(New Technology)即视窗NT是由微软公司发行的操作系统。
+Windows NT是基于OS/2 NT的基础编制的。OS/2是由微软和IBM联合研制，分为微软的Microsoft OS/2 NT与IBM的IBM OS/2。协作后来不欢而散，IBM继续向市场提供先前的OS/2版本，而微软则把自己的OS/2 NT的名称改为Windows NT，即第一代的Windows NT 3.1。Windows NT是纯32位操作系统，采用先进的NT核心技术。NT即新技术(New Technology)。
+微软公司从数字设备公司（Digital Equipment Corporation）雇佣了一批人员来开发这个新系统。这个系统的很多元素反映了早期的带有VMS和RSX-11的DEC概念。
+Windows NT是Microsoft推出的面向工作站、网络服务器和大型计算机的网络操作系统，也可做PC操作系统。它与通信服务紧密集成，提供文件和打印服务，能运行客户机／服务器应用程序，内置了Internet／Intranet功能，已逐渐成为企业组网的标准平台。本文介绍以Windows NT Server 4.0为准。
+
+== Windows NT的主要特点 ==
+①32位操作系统,多重引导功能，可与其它操作系统共存。
+②实现了“抢先式”多任务和多线程操作。
+③采用SMP（对称多处理）技术，支持多CPU系统。
+④支持CISC（如Intel系统）和RISC（如Power PC、R4400等）多种硬件平台。
+⑤可与各种网络操作系统实现互操作。如：UNIX、Novel Netware、Macintosh等系统；对客户操作系统提供广泛支持，如MS-DOS、Windows、Windows NT
+Workstation、UINX、OS／2、Macintosh等；支持多种协议：TCP／IP、NetBEUI、DLC、AppleTalk、NWLINK等。
+⑥安全性达到美国国防部的C2标准。
+
+== Windows NT的两个版本 ==
+Windows NT的两个版本分别是Windows NT Workstation 和Windows NT Server 。Windows NT
+Workstation的设计目标是工作站操作系统，适用于交互式桌面环境；Windows NT Server的设计目标是企业级的网络操作系统，提供容易管理、反应迅速的网络环境。两者在系统结构上完全一样，只是为适应不同应用环境在运行效率上做相应调整。Windows NT Server具有更多的高级功能，可把Windows NT Workstation 看作它的子集。
+
+== Windows NT引入的新概念 ==
+（1）NTFS（Windows NT File System）：Windows NT采用的新型文件系统。可提供安全存取控制及容错能力，在大容量磁盘上，它的效率比FAT高。
+（2）共享：对网络资源设置一定的权限许可，没有得到权限许可，就无法访问网络资源。
+（3）用户账户（User Account）：要想使用网络资源，必须有用户账户。Windows NT对用户和服务程序，都要求提供合法账户。专为应用程序或服务进程创建的账户即服务账户，在系统启动时，服务进程使用服务账户登录以获得在系统中使用资源的权利和权限。普通用户账户由用户登录时提供，用于Windows NT控制该用户在系统中的权利和权限，与服务账户本质上无区别。
+（4）域（Domain）：是Windows NT中数据安全和集中管理的基本单位。网络由域组成，域具有唯一的名称。域可以看作由运行NT的服务器组成的系统，一组电脑共用相同的账户及安全数据库。
+（5）工作群组（Workgroup）：一种资源与系统管理皆分散的网络结构。工作群组里，每台电脑之间是对等关系，彼此可以是服务器，也可以当作工作站。
+（6）权利（Right）：授权某用户可以在系统上执行某些操作。权利用来保护系统整体。
+（7）权限（Permission）：用来保护特定对象。权限规定可以使用某一对象的用户以及用什么方法使用。
+（8）安全审核：Windows NT将记录发生在电脑上各项与安全系统相关的过程。
+Windows NT获得了比OS/2更大的成功，因为它那永远不能完全了解的特性和微软的市场威力。
+
+== Windows NT的主要版本 ==
+Microsoft Windows NT 3.1 (1993)
+Microsoft Windows NT 3.5 (1994)
+Microsoft Windows NT 3.51 (1995)
+Microsoft Windows NT 4.0 (1996)
+从5.0版开始，Windows NT只是简单地称为Windows了，下面的版本是后来的版本：
+Microsoft Windows 2000 (Windows NT 5.0) (1999)
+Microsoft Windows XP (Windows NT 5.1) (2001)
+Microsoft Windows Server 2003 (Windows NT 5.2) (2003)
+Microsoft Windows Vista (Windows NT 6.0 Client) (2006)
+Microsoft Windows Server 2008 (Windows NT 6.0 Server) (2008)
+Microsoft Windows 7 (Windows NT 6.1 Client) (2009)
+Microsoft Windows Server 2008 R2 (Windows NT 6.1 Server) (2009)
+Microsoft Windows Thin PC (Windows NT 6.1 Client) (2011)
+Microsoft Windows Server 2012 (Windows NT 6.2 Server) (2012)
+Microsoft Windows 8 (Windows NT 6.2 Client) (2012)
+Microsoft Windows Server 2012 R2 (Windows NT 6.3 Server) (2013)
+Microsoft Windows 8.1 (Windows NT 6.3 Client) (2013)
+Microsoft Windows 10 (Windows NT 10.0 Client) (2015)
+Microsoft Windows Server 2016 (Windows NT 10.0 Server) (2016)
+Microsoft Windows Server 2019 (Windows NT 10.0 Server) (2018)
+Microsoft Windows 11 (Windows NT 10.0 Client) (2021)
+Microsoft Windows Server 2022 (Windows NT 10.0 Server) (2021)
+Microsoft Windows Server 2025 (Windows NT 10.0 Server) (2024)
+
+== NT命名的由来 ==
+有说法认为，NT一名源自原微软NT首席设计师戴夫·卡特勒（Dave Cutler），曾经开发过OpenVMS系统的他将“VMS”一词以恺撒密码的形式向前递增一个字母，使之成为“WNT”，而NT系统在获得Windows品牌名之前原本就是作为OS/2系统的继任者，故被简单称为“NT OS/2”。但NT的其中一名原开发者马克·卢科夫斯基（Mark Lucovsky）曾提到，NT一名是源自该系统的目标处理器，代号为“N-Ten”的英特尔i860处理器。
+在1998年比尔·盖茨的一次问答环节上，他透露“NT”一词曾经衍生为“新技术”（New Technology）之意，但现已不再包含任何特定意义。尽管现今微软对于NT架构的系统产品仍描述为“基于NT技术”（Built on NT Technology），但自Windows 2000之后基于NT架构的系统均抛弃了NT一词。

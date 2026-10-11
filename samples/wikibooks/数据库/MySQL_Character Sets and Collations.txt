@@ -1,0 +1,68 @@
+应用程序与数据库交互时，为避免出现乱码，需要注意字符集与字符比较的设置。
+
+== MySQL字符集 ==
+查看数据库使用的各种字符集与字符比较：
+
+mysql> SHOW SESSION VARIABLES LIKE 'character\_set\_%';
++--------------------------+---------+
+| Variable_name            | Value   |
++--------------------------+---------+
+| character_set_client     | gbk     |
+| character_set_connection | utf8mb4 |
+| character_set_database   | utf8mb4 |
+| character_set_filesystem | binary  |
+| character_set_results    | gbk     |
+| character_set_server     | utf8mb4 |
+| character_set_system     | utf8    |
++--------------------------+---------+
+7 rows in set (0.00 sec)
+mysql> SHOW SESSION VARIABLES LIKE 'collation_connection';
++----------------------+--------------------+
+| Variable_name        | Value              |
++----------------------+--------------------+
+| collation_connection | utf8mb4_0900_ai_ci |
++----------------------+--------------------+
+1 row in set (0.00 sec)
+
+从mysql 8.0开始，mysql默认的CHARSET已经不再是Latin1了，改为了utf8mb4（参考链接），并且默认的COLLATE也改为了utf8mb4_0900_ai_ci。utf8mb4_0900_ai_ci大体上就是unicode的进一步细分，0900指代unicode比较算法的编号（ Unicode Collation Algorithm version），ai表示accent insensitive（发音无关），例如e, è, é, ê 和 ë是一视同仁的。ci表示大小写无关。可以在session、database、table、column、query各级别设定collation规则。
+高版本（8.0以上）的数据库内部采用了utf8mb4字符集编码。因此，对外界有影响的是3个字符集设置：
+
+character_set_client： 客户端发给数据库的语句（statement）所用的字符编码
+character_set_connection ：数据库收到客户端发来的语句后的转码字符集及字符比较，例如：select '中国' > '世界';
+character_set_results ：数据库把结果发给客户端所用的字符集。
+可见，如果上述字符集都设置为utf8mb4，就可以避免乱码。
+
+== character_set_client设置 ==
+mysql客户端缺省采用操作系统的当前代码页为character_set_client；
+mysql客户端的配置文件设置：
+
+[mysql]
+default-character-set=koi8r
+
+连接时指定：
+
+ mysql --default-character-set=
+
+在connection string中设置：
+
+connectionString="server=127.0.0.1;User Id=root;password=123;Persist Security Info=True;database=myDBName;charset=utf8mb4"
+
+== 客户端/应用程序的编码设置 ==
+对于网页，可设置：
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+对于ASP.NET项目，在web.config配置：
+
+<globalization fileEncoding="utf-8" />
+
+一个完整的URL可以简单地认为包含二个部分：文件路径（含目录） 和 查询参数(QueryString)。在编码时，一定要分开处理：
+
+编码文件路径时，应该选择 encodeURI，HttpUtility.UrlPathEncode 。
+编码查询参数时，应该选择 encodeURIComponent，HttpUtility.UrlEncode，而且拼接方式应该是：Encode(key) + "=" + Encode(value)
+
+== mysql不支持的字符编码 ==
+ucs2
+utf16
+utf16le
+utf32

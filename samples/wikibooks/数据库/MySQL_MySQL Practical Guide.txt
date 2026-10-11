@@ -1,0 +1,229 @@
+== 安装 MySQL ==
+
+=== 一站式解决 ===
+
+=== 单独安装 ===
+
+=== 免安装使用 ===
+
+==== 下载： ====
+下载64位系统的community server版的最新版本号的zip包。例如：mysql-8.0.28-winx64.zip。下载地址：https://dev.mysql.com/downloads/mysql/
+下载后解压：D:\mysql-8.0.28-winx64
+
+==== 配置环境变量 ====
+可以不设置，略过此步。
+变量名：MYSQL_HOME
+变量值：D:\mysql-8.0.13-winx64
+环境变量path里添加：%MYSQL_HOME%\bin;
+
+==== 初始化并生成data文件夹 ====
+以管理员身份运行cmd.exe
+进入D:\mysql-8.0.28-winx64\bin 下执行命令：
+
+mysqld --initialize-insecure --console
+
+在D:\mysql-8.0.28-winx64目录下生成data目录
+如果用 mysqld --initialize --console 初始化数据库，则会为root创建一个临时password。后续操作需要用这个password登录。
+输入mysqld --initialize命令，初始化mysql的data数据目录，初始化完毕后，会在解压mysql目录下生成一个data文件夹，有个计算机名字.err结尾文件（LAPTOP-37S66HI6.err），打开后@localhost:后面就是随机生成的密码。
+
+==== 启动服务 ====
+执行命令：net start mysql 启动mysql服务，若提示：服务名无效...解决方法见下一步
+
+==== 解决启动服务失败（报错） ====
+提示：服务名无效
+解决方法：
+执行命令：mysqld --install  即可（不需要my.ini配置文件 ）
+可在资源管理器中把mysql进程全结束了，重新启动即可。
+
+== 卸载mysql ==
+#停止服务
+net stop mysql
+
+#卸载服务
+mysqld --remove
+
+== 客户端登录/退出mysql ==
+登录本机mysql:
+
+d:\mysql-8.0.13-winx64\bin>mysql -u root -p
+Enter password: ******
+
+注意用户名前可以有空格也可以没有空格，但是密码前必须没有空格，否则让你重新输入密码. root密码为空，不用输入密码，直接回车即可
+连接到远程主机上的MYSQL，假设远程主机的IP为：110.110.110.110，用户名为root,密码为abcd123。则键入以下命 令：
+　　mysql -h110.110.110.110 -P3307 -u root -pabcd123
+退出mysql:
+
+  mysql> quit
+
+== MySQL用户账号管理 ==
+
+=== 修改默认的加密插件 ===
+MySQL8.0.4之前，MySQL的密码认证插件是“mysql_native_password”，之后使用的是“caching_sha2_password”。
+Mysql 安装完客户端连接报错：“Authentication plugin 'caching_sha2_password' cannot be loaded: ” 意思是客户端不支持caching_sha2_password的加密方式。
+可以配置default_authentication_plugin项。在mysql安装目下的配置文件my.ini中：
+
+[mysqld]
+default_authentication_plugin=mysql_native_password
+
+=== root更改密码与加密方式 ===
+在MySQL 8.04前，执行：
+
+SET PASSWORD=PASSWORD('[修改的密码]');
+
+在MySQL 8.04之后， 执行语句：
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY '新密码';
+
+其中WITH mysql_native_password为可选
+另一种方法：给root加个密码ab12。首先在DOS下进入目录mysql\bin，然后键入以下命令
+
+mysqladmin -u root -password ab12
+
+再将root的密码改为djg345。
+
+mysqladmin -u root -p ab12 password ******
+
+=== 忘记root密码 ===
+net stop mysql
+mysqld --skip-grant-tables
+mysql -u root
+update mysql.user set password='这里填写你要设置的密码'  where user='root';
+或者update user set password=password("new_pass") where user="root";
+net start mysql;//启动mysql服务
+
+=== 查询所有用户/密码 ===
+查询用户、密码、加密方式：
+
+mysql> select host,user,authentication_string,plugin from mysql.user;
+
+=== 创建用户 ===
+CREATE USER 'TestUser'@'%' IDENTIFIED BY 'MyPassword123!';
+
+=== 设置或修改用户密码、权限 ===
+修改root账户远程访问
+
+  GRANT ALL PRIVILEGES ON *.* TO 'root'@'%'IDENTIFIED BY '密码' WITH GRANT OPTION;
+
+或者
+
+ update mysql.user set host='%' where user='root';
+
+链接数据库修改Root账户密码
+
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass1234!';
+ALTER USER 'TestUser'@'%' IDENTIFIED WITH mysql_native_password BY 'MyPassword123!';
+
+注意:用以上命令授权的用户不能给其它用户授权,如果想让该用户可以授权,用以下命令:
+
+   grant all on *.* to 'UserName'@'%';
+   GRANT all ON databasename.tablename TO 'username'@'hostname' ;
+
+注意，数据库名、表名不能用单引号围起来。
+
+== 创建数据库 ==
+首先登录作为root用户。
+
+查看所有的数据库列表：show databases;
+创建一个叫做people的数据库create database people;
+
+== 在数据库中创建表与数据: ==
+查看当前所在的数据库：  select database();
+设置当前数据库：USE people
+创建一张表：
+
+CREATE TABLE peopleInfo
+
+(
+
+peopleID int unsigned not null auto_increment primary key,
+
+firstName varchar(30),
+
+lastName varchar(30),
+
+age int,
+
+gender varchar(13)
+
+);
+
+列出当前数据库中所有表：show tables;
+查看一张表的详细定义：describe peopleInfo;
+删除一张表： drop table peopleInfo;
+
+== 备份与恢复数据库 ==
+导出数据库的所有表结构定义：mysqldump -d -h localhost -u root -pmypassword databasename > dumpfile.sql
+导入时，在mysql里面执行 mysql> source d:\dumpfile.sql
+把MySQL目录下的data子目录完整复制覆盖到另一台电脑的同版本MySQL目录下，就可以实现数据库中所有信息的复制迁移。
+
+== 升级数据库 ==
+对于Windows，把zip压缩的免安装的mysql程序包在原来的老版本上覆盖即可。
+需要停止与开始服务：
+
+ net stop ServiceName
+
+与
+
+net start ServiceName
+
+必要时，删除与增加服务：
+
+mysqld --remove  SQL-x.y
+mysqld --install  SQL-x.y
+
+== 数据库设置 ==
+在Linux上，配置文件为mysql.conf  在Windows上，配置文件是mysql.ini 例如：
+
+ #########################################################
+    [client]
+    port=3306
+    default-character-set=utf8
+ #regin
+    [mysqld]
+    port=3306
+    character_set_server=utf8
+    basedir="E:\wamp\Mysql"
+    #解压目录
+    datadir="E:\wamp\Mysql\data"
+    #解压目录下data目录
+    sql_mode=NO_ENGINE_SUBSTITUTION,STRICT_TRANS_TABLES
+    [WinMySQLAdmin]
+    E:\wamp\Mysql\bin\mysqld.exe
+ #########################################################
+
+查看MySQL变量：
+
+  Mysql> show variables like '%timeout%';
+
+配置参数：
+
+interactive_timeout: 服务器关闭交互式连接前等待活动的秒数。交互式客户端定义为在mysql_real_connect()中使用CLIENT_INTERACTIVE选项的客户端。参数默认值：28800秒（8小时）
+wait_timeout:服务器关闭非交互连接之前等待活动的秒数。参数默认值：28800秒（8小时）
+max_connections: 允许的同时客户的数量。增加该值增加 mysqld 要求的文件描述符的数量。不足会导致 too many connections 错误。 默认数值是100
+record_buffer: 每个做顺序扫描的线程为其扫描的每张表分配这个大小的一个缓冲区。如果你做很多顺序扫描，你可能想要增加该值。默认数值是131072(128k)
+skip-locking: 避免MySQL的外部锁定。
+skip-name-resolve : 禁止MySQL对外部连接进行DNS解析，可以消除MySQL进行DNS解析的时间。如果开启该选项，则所有远程主机连接授权都要使用IP地址方式
+back_log: 指出在MySQL暂时停止响应新请求之前的短时间内多少个请求可以被存在堆栈中。 如果系统在一个短时间内有很多连接，则需要增大该参数的值，该参数值指定到来的TCP/IP连接的侦听队列的大小。试图设定back_log高于操作系统的限制将是无效的。默认值为50。
+key_buffer_size: 指定用于索引的缓冲区大小，增加可得到更好的索引处理性能。该参数值设置的过大反而会是服务器整体效率降低
+max_allowed_packet: Server接受的数据包大小
+thread_stack: 每个连接被创建的时候,mysql分配给它的内存.
+table_cache: 表高速缓存的大小。每当MySQL访问一个表时，如果在表缓冲区中还有空间，该表就被打开并放入其中，这样可以更快地访问表内容。通过检查峰值时间的状态值Open_tables和Opened_tables，可以决定是否需要增加table_cache的值。如果你发现 open_tables等于table_cache，并且opened_tables在不断增长，那么需要增加table_cache的值了(上述状态值可以使用SHOW STATUS LIKE ‘Open%tables'获得)。如果设置得太高，可能会造成文件描述符不足，从而造成性能不稳定或者连接失败。
+sort_buffer_size: 排序时所能使用的缓冲区大小。该参数对应的分配内存是每连接独占，如果有100个连接，那么实际分配的总共排序缓冲区大小为100 × 6 ＝ 600MB。
+read_buffer_size: 读查询操作所能使用的缓冲区大小。该参数对应的分配内存也是每连接独享。
+join_buffer_size:联合查询操作所能使用的缓冲区大小，该参数对应的分配内存也是每连接独享。
+myisam_sort_buffer_size: MyISAM表发生变化时重新排序所需的缓冲
+thread_cache_size: 可以复用的保存在中的线程的数量。如果有，新的线程从缓存中取得，当断开连接的时候如果有空间，客户的线置在缓存中。
+query_cache_size: 指定MySQL查询缓冲区的大小
+tmp_table_size: 通过设置tmp_table_size选项来增加一张临时表的大小
+max_connect_errors: 对于同一主机，如果有超出该参数值个数的中断错误连接，则该主机将被禁止连接。如需对该主机进行解禁，执行：FLUSH HOST;。
+wait_timeout : 指定一个请求的最大连接时间，对于4GB左右内存的服务器可以设置为5-10。
+thread_concurrency : 该参数取值为服务器逻辑CPU数量*2，在本例中，服务器有2颗物理CPU，而每颗物理CPU又支持H.T超线程，所以实际取值为4*2=8
+skip-networking : 开启该选项可以彻底关闭MySQL的TCP/IP连接方式
+innodb_additional_mem_pool_size: InnoDB 用来保存数据字典信息和其他内部数据结构的内存池的大小，单位是 byte，参数默认值为8M。数据库中的表数量越多，参数值应该越大，如果 InnoDB 用完了内存池中的内存，就会从操作系统中分配内存，同时在 error log 中打入报警信息。
+innodb_flush_log_at_trx_commit: 设置为0就是等到innodb_log_buffer_size列队满后再统一储存,默认为1
+innodb_log_buffer_size
+innodb_thread_concurrency: 服务器CPU有几个就设置为多少
+key_buffer_size
+read_rnd_buffer_size
+
+== 参考文献 ==

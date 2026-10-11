@@ -1,0 +1,70 @@
+我们已经学习了 Prelude 中四种用于操作数据结构的类型类: Functor, Applicative, Monad 和 Foldable. 现在我们来学习第五个: Traversable . Traversable, 如同其名, 一般化了了关于遍历 (traverse) 的操作: 遍历一个结构, 对于其中的每一个值得出并返回一个结果.
+
+== Functor 与遍历 ==
+我们已经接触遍历很久了. 比如说如下列表的 Functor 和 Foldable instance 实现:
+
+fmap f 遍历整个列表, 将 f 应用到每个值上并将结果放入一个新构造的列表中返回. 相似的, foldMap f 遍历整个列表, 将 f 应用到每个值上并将结果 mappend 后返回. 然而, Functor 和 Foldable, 并不能表示所有实用的遍历方式. 举个例子, 如果我们以如下的方式使用 Maybe 测试负数...
+
+... 然后我们用它来实现...
+
+... 如果列表中没有负数, 我们将它包裹在 Just 里返回; 否则我们返回 Nothing. 我们发现, 似乎 Foldable 和 Functor 在这里都无法给我们帮助. 使用 Foldable 将会把原列表转换成一个我们所选的 Monoid, 而似乎我们并不能让其返回 Just 中的原列表或 Nothing . 至于 Functor, fmap 一开始看起来很有希望...
+
+... 然而现在我们必须找到一种方法将一列表的 Maybe 转换成 Maybe 里的列表. 如果我们坚持走这条路, 看起来我们需要 fold. 然而, 我们不仅仅要将这个列表中的值组合起来, 我们还需要组合起 Maybe 所表示的额外信息 (context, 即"一个 Maybe 值是 Just 还是 Nothing"这个信息), 然后重建这个列表. 所幸, 有一个类型类存在的目的就是为了组合 Functor 表示的额外信息: Applicative . 而从 Applicative, 可以最终导出我们所需要的类型类: Traversable.
+
+Traversable 与 Applicative 额外信息的关系和 Foldable 与 Monoid 值的关系一样. 从这个角度来说, sequenceA 和 fold 类似 -− 前者总结出一个 Applicative 内值的额外信息, 然后使用这个信息重新构建一个值. sequenceA 就是我们想要的函数:
+
+这些是 Traversable 提供的函数:
+
+如果 sequenceA 可以被类比为 fold 的话, traverse 可以被类比为 foldMap. 它们是互相定义的, 因此一个 Traversable 的最小实现只需要实现其中一个就可以了:
+
+我们实现列表的 traverse 后, 它与 Functor 和 Foldable 的相似之处就显而易见了:
+
+一般来说, 实现 Traversable instance 时我们最好选择 traverse (而不是 sequenceA),  因为 traverse 的默认实现, 原则上, 遍历了这个结构两次 (fmap 和 sequenceA 各一次).
+我们可以直接明了地用 traverse 定义 rejectWithNegatives:
+
+== Traversable 的意义 ==
+Traversable 能够在你所选择的任意 Applicative 的意义下遍历. traverse 的类型...
+
+... 和我们在其他类型类中见到的 map 相似. 但和 fmap 所做的修改原有结构内部的值而保留额外信息不同, 也和 (>>=) 所做的修改结构本身不同, traverse 在结构之上添加了一层额外信息. 换句话说, traverse 使有副作用的遍历成为可能 -− 遍历将产生一个总的额外信息.
+在我们能够提取在这层新的额外信息之下的值的情况下, 它会反映出原有的结构 (当然, 值或许会变). 这里是一个嵌套列表的例子:
+
+内层列表保留了原列表的结构 −- 它们都有四个元素. 外层列表就是新一层信息, 和列表所表示的不确定性对应: 子列表中的值可以在从 0 到其原值的区间中取值.
+或许我们也可以从 sequenceA 的角度去理解 Traversable. 我们需要关注这个函数是如何分配额外信息的.
+
+本例中, sequenceA 的作用可以被看成将将原有结构外层的额外信息分配到新产生的结构中, 因此新结构的内层列表各包含两个值, 就和原有的外层列表一样. 新的外层结构包含 12 个值, 正是用 (<*>) 将一个 3 个值的列表和另一个 4 个值的列表结合所能得到的结果数目. 这种"分配额外信息"的观点或许能够帮助我们理解为什么有一些 Functor 不能同时是 Traversable (比如说, 我们如何分配 IO, 或是函数的额外信息呢?).
+
+== Traversable 法则 ==
+我们期望 Traversable 满足这两条法则:
+
+以及一个必定成立的定理:
+
+或许它们不是非常容易, 因此我们来分析一下. 从最后一个开始: 一个 Applicative 上的同态映射是一个保留了 Applicative 操作的函数, 使得:
+
+我们可以注意到, 这个定义和幺半群同态类似, 而且还有着对应着我们在关于 Foldable 的章节中所见的 foldMap 的自然性定理.
+恒等法则使用了 Identity, 一个无实际作用的 Functor:
+
+法则规定, 对一个结构用 Identity 进行遍历相当于用 Identity 包裹起这个结构, 也就是相当于什么都不做 (因为其与原结构只差一次 runIdentity 调用). 显然, Identity 值构造函数可以被称为"守恒"遍历.
+复合法则则需要引入 Compose Functor:
+
+Compose 代表的是 Functor 的复合. 两个复合的 Functor 仍然形成一个 Functor, 相似的, 两个复合的 Applicative 仍然形成一个 Applicative . Compose 的 instance 实现都并不难理解.
+复合法则指的是, 将两次遍历分开进行 (等式右侧) 与将两次遍历复合起来进行 (等式左侧) 的结果不应该有差异. 这个法则和 Functor 的第二个法则类似. 由于第二次遍历 (或者对于等式左侧来说, 遍历的第二部分) 发生在由第一次 (部分) 遍历生成的结构的下层, 我们需要 fmap. 我们还需要 Compose 以将复合的遍历应用在正确的层级上.
+Identity 和 Compose 分别定义在 Data.Functor.Identity 和 Data.Functor.Compose.
+这两个法则也能用 sequenceA 表示:
+
+虽然并不容易看出, 但是由这些法则我们能够推出一些有用的性质: :
+
+遍历不会遗漏值.
+遍历不会重复访问值.
+traverse pure = pure
+被遍历的结构不会改变 (其将会被完整保存或是完全摧毁).
+
+== 重新发明 fmap 和 foldMap ==
+我们仍未说明为什么 Traversable 有着 Functor 和 Foldable 的类型类限制. 原因很简单: 一个满足法则的 Traversable 能够独立使用 traverse 实现 fmap 和 foldMap. 对于 fmap, 我们只需用 Identity 使任意函数满足遍历的类型:
+
+至于 foldMap, 我们需要引入 Control.Applicative 中的 Functor Const:
+
+Const 是一个常Functor. 一个 Const a b 类型的值实际上并不包含一个 b 值. 事实上, 它保存着一个不受 fmap 影响的 a 类型的值. 对于我们当前的目的来说, 有趣的部分在于它的 Applicative instance 实现:
+
+(<*>) 简单地将值用 mappend 结合起来 . 我们能够利用这个性质, 将任何形如 Monoid m => a -> m 的函数转化为 foldMap 所要求的类型. 由于以上的 instance, 遍历退化为 fold:
+
+我们由此使用 traverse 定义了两个从表面上看截然不同的两个函数, 而我们所要做的只是选择合适的包裹 Functor 罢了. 我们或许可以从中了解到抽象 Functor 的强大之处 .

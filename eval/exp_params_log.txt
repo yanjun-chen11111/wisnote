@@ -1,0 +1,5 @@
+[实验] 语料 2 个文件，标注 18 题
+[实验] 网格：size=[300, 500, 800] × overlap=[0, 50, 100]
+
+'_ssl.c:1015: The handshake operation timed out' thrown while requesting HEAD https://hf-mirror.com/BAAI/bge-small-zh-v1.5/resolve/main/adapter_config.json
+Retrying in 1s [Retry 1/5].

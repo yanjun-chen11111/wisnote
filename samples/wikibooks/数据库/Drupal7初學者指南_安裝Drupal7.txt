@@ -1,0 +1,15 @@
+== 1 ==
+安装Drupal7之前，先要下载Drupal7的主体。你可以去Drupal的官方网站下载，这里不再强调。
+需要注意的是，Drupal7目前还没有（起码到本文的目前）自动下载语言包的功能。如果你打算使用英文以外的语言，你需要在Drupal网站下载对应语言的PO文件。这里以中文7.4的翻译为例，下载drupal-7.4.zh-hans.po文件。
+将压缩包下载后，将文件放在网站根目录的适当位置。如果要作为全站的主程序那就放在根目录吧。然后将drupal-7.4.zh-hans.po文件放在Drupal7根目录的profiles\standard\translations下。
+在安装前，先去一下Phpmyadin。在Mysql那边创建一个数据库，作为Drupal的数据库。在首页的新建数据库上填写数据库名字，这里先默认为“Drupal”吧。旁边选择“utf8_bin”以选择UTF8作为数据库的编码。
+访问Drupal7所在的根目录（不一定是你网站的根目录），就开始进入安装了。
+
+== 2 ==
+这里有两个选项，标准（standard）和最小（Minimal）。最小只打开部分模块。我们先选标准。
+下一步是选择语言。如果你有下载语言包，这里除了英文还有其它语言选择，选择完毕就会自动转到选择的语言版本继续安装。
+第三步是选择数据库，MySQL, MariaDB, or equivalent就是说选MySQL, MariaDB或等效的数据库。如果没有出现这个选项，请检查PHP服务器PDO相关的选项是否打开。另一个选项是SQLite。如果选SQLite则默认即可。如果是选MySQL，在Database name打入先前创建的数据库名字（先前创建的数据库默认为Drupal），及数据库用户名和密码。以前篇的wamp为例，用户名为root，密码为空。
+这时如果没什么问题，安装就开始了。注意，安装主体结束后会顺便导入语言文件。如果你的服务器设置超时过短，有可能在导入文件时出错。别管它，删除语言文件再来一次。语言文件可以在安装完成后导入。
+安装设置结束后，就轮到设置站点的基本信息了。Site name填写网站名称，Site e-mail address填网站的电邮地址。SITE MAINTENANCE ACCOUNT段落则是设置管理员用户名等。这个用户名日后用作管理员登录。下方则是国家，时区等选项。最后是是否检查更新和是否接收电邮提醒，酌情选择吧。
+当你看到“Congratulations, you installed Drupal!”时，安装完成了
+注意：安装完成后，程序会在sites\default目录下生成settings.php（不是default.settings.php）。程序用此文件存储基本设置，以及判定安装完成。也就是说，只要删除settings.php，即可再次安装Drupal。当然，需要删除或更换数据库。

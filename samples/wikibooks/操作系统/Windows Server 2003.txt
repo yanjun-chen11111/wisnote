@@ -1,0 +1,21 @@
+维基教科书 > 电脑 > 操作系统 > Windows Server 2003
+Windows Server 2003是微软推出服务器操作系统。
+一开始，该产品叫作“Windows .NET Server”，改成“Windows .NET Server 2003”，后最终被改成“Windows Server 2003”，于2003年3月28日发布，并在同年四月底上市。
+Windows Server 2003 在使用上可以参考 Windows XP。本教科书介绍服务器的配置等内容。
+
+== 改进 ==
+改进的Active Directory（活动目录）（如可以从schema中删除类）
+改进的Group Policy（组策略）操作和管理
+改进的磁盘管理，如可以从Shadow Copy（卷影复制）中备份文件。
+
+== 获取 ==
+Windows Server 2003 标准版零售价格为USD999.00，包括5个Active Directory。客户也可以通过原始厂商OEM与批量许可（又称大量授权）(Volume License)方式取得。
+Windows Server 2003 企业版的32位版本零售价格为USD3,999.00，包括25个Active Directory。客户也可以通过原始厂商OEM与批量许可(Volume License)方式取得。至于64位版本的Windows Server 2003 Enterprise Edition只能通过OEM与Volume License方式取得。
+Windows Server 2003 Web版的Open NL价格为USD399，不需要客户端访问授权。此版本没有零售版，只能通过OEM与Volume License方式取得。
+Windows Server 2003 数据中心版不论32位版还是64位版都必须通过OEM方式获得，因此价格未知。
+
+== 环境配置 ==
+
+=== IIS ===
+
+=== ASP.NET ===

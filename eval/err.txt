@@ -1,0 +1,4 @@
+'_ssl.c:1015: The handshake operation timed out' thrown while requesting HEAD https://hf-mirror.com/BAAI/bge-small-zh-v1.5/resolve/main/adapter_config.json
+Retrying in 1s [Retry 1/5].
+'_ssl.c:1015: The handshake operation timed out' thrown while requesting HEAD https://hf-mirror.com/BAAI/bge-small-zh-v1.5/resolve/main/adapter_config.json
+Retrying in 2s [Retry 2/5].

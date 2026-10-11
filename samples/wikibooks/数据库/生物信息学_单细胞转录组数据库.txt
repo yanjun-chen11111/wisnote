@@ -1,0 +1,212 @@
+== DRscDB：DRSC scRNA-seq数据库 ==
+网址：DRSC scRNA-seq数据库。
+视频教程。
+DRscDB数据库支持人类、小鼠、果蝇、斑马鱼四种物种，可以查询某个物种中的单个基因在某种组织或全部组织中的表达，可以设置条件来过滤结果，支持单个或多个基因列表的富集分析，基因名的转换，细胞类型的marker标签，截至2021年5月25日共收录48条单细胞转录组数据集。
+此外，数据库还支持用户提交自己的研究数据（上传模板与示例）。
+参考文献：Hu Y ,  Tattikota S G ,  Liu Y , et al. DRscDB: A single-cell RNA-seq resource for data mining and data comparison across species[J]. Computational and Structural Biotechnology Journal, 2021.
+
+== scRNASeqDB：人类单细胞转录组表达数据库 ==
+单细胞RNA-Seq（scRNA-seq）是一种新兴的方法，有助于探索单个细胞中的综合转录组。为了给生物学和医学提供有用和独特的参考资源，开发了scRNASeqDB数据库，其中包含从GEO收集的36个人类单细胞基因表达数据集，涉及来自174个细胞群的8910个细胞。提供了不同状态细胞基因表达的详细信息及特征，包括基因表达的热图和箱线图、基因相关矩阵、GO和通路注释。
+网址：scRNASeqDB
+参考文献：Yuan Cao, Junjie Zhu, Guangchun Han, Peilin Jia, Zhongming Zhao. scRNASeqDB: a database for gene expression profiling in human single cell by RNA-seq (in review). bioRxiv
+
+== Cell BLAST：单细胞转录组数据查询和注释（BLAST） ==
+网址：Cell BLAST
+参考文献：Cao Z. J.†, Wei L.†, Lu S., Yang D. C., Gao G.*. Searching large-scale scRNA-seq databases via unbiased cell embedding with Cell BLAST. Nat. Commun. 11, 3458 (2020).[PubMed][Website][Press]
+Cell BLAST是一个自带高质量参考数据库的scRNA-seq数据检索/注释工具，能做细胞类型鉴定、发现新细胞类型、注释连续细胞状态。这个网站由北京大学的研究团队研发，今年7月份相关论文发布在在《Nature Communications》这一数据库为有效利用现有数据进行细胞注释和跨数据集研究提供了新的工具和资源。
+
+== iSyTE：眼睛发育数据库 ==
+网址：https://research.bioinformatics.udel.edu/iSyTE/ppi/index.php
+
+== DBTMEE：小鼠早期胚胎发育数据库 ==
+网址：http://dbtmee.hgc.jp/
+参考文献：Park SJ, Shirahige K, Ohsugi M, Nakai K. DBTMEE: a database of transcriptome in mouse early embryos. Nucleic Acids Res. 2015 Jan;43(Database issue):D771-6. doi: 10.1093/nar/gku1001. Epub 2014 Oct 21. PMID: 25336621; PMCID: PMC4383872.
+
+== StemMapper：干细胞发育数据库 ==
+网址：http://stemmapper.sysbiolab.eu
+参考文献：https://academic.oup.com/nar/article/46/D1/D788/4555230
+
+== EMAGE: 小鼠胚胎发育空间转录组数据库 ==
+网址：http://genex.hgu.mrc.ac.uk/Emage/database
+参考文献：
+
+== stemformatics：针对干细胞构建的单细胞数据库 ==
+网址：https://www.stemformatics.org/expressions/gene_expression_graph
+参考文献：
+
+== scTPA：单细胞转录组通路激活标签 ==
+网址：scTPA
+参考文献：Zhang Y*, Zhang Y*, Hu J*, Zhang J, Guo F, Zhou M, Zhang G#, Yu F#, Su J#. scTPA: A web tool for single-cell transcriptome analysis of pathway activation signatures. Bioinformatics. 2020.
+Zhang Y*, Ma Y*, Huang Y, Zhang Y, Jiang Q, Zhou M, Su J#. Benchmarking algorithms for pathway activity transformation of single-cell RNA-seq data. Computational and Structural Biotechnology Journal (Accepted)
+scTPA是用于在人和小鼠中基于生物途径激活进行单细胞转录组分析和注释的网络工具。数据库收集了具有不同功能和分类的大量生物途径，这有助于识别细胞类型注释和解释的关键途径签名。优化了四种不同的途径激活评估方法的可执行代码，以使运行时间减少4至56倍。提供了单细胞途径激活概况的分析和可视化功能，例如细胞聚类和注释，标记途径及其相关基因的鉴定，从面向途径的角度，这将有助于更好地了解细胞类型和状态。
+
+== SC2disease：单细胞测序与疾病（已无法使用） ==
+网址：SC2disease
+参考文献：https://academic.oup.com/nar/article/49/D1/D1413/5917662
+SC2disease是一个人工收集的数据库，能为研究者提供各种疾病的各种细胞类型准确的基因表达谱资源，浏览感兴趣的基因的表达、搜索细胞类型标记、寻找多种疾病的生物标志物、比较处于疾病和非疾病状态的各种类型细胞的表达谱。由西北工业大学计算机学院的彭佳杰教授课题组开发建立，于2020年10月3号发表在国际著名杂志《Nucleic Acids Research》（IF=11.501）。SC2disease包含946481条数据，对应341种细胞类型、29种组织和25种疾病。SC2disease数据库中的每个条目都包含不同细胞类型、组织和疾病相关健康状况之间差异表达基因的比较。
+
+== CellMarker：细胞标签库 ==
+网址：CellMarker
+参考文献：Zhang X, Lan Y, Xu J, Quan F, Zhao E, Deng C, Luo T, Xu L, Liao G, Yan M, Ping Y, Li F, Shi A, Bai J, Zhao T, Li X, Xiao Y. CellMarker: a manually curated resource of cell markers in human and mouse. Nucleic Acids Res. 2019 Jan 8;47(D1):D721-D728. doi: 10.1093/nar/gky900. PMID: 30289549; PMCID: PMC6323899.
+细胞标志物（Marker）是我们用来对细胞定义和分选的重要标志。在进行单细胞转录组数据分析时，非常关键的一步是根据细胞的特征性基因和特征性生物学功能去定义每一个细胞亚群。CellMarker是2019年1月份由哈尔滨医科大学Yun Xiao等老师发表于核酸研究 (Nucleic Acids Research)，该团队通过梳理100,000+发表的文献，梳理出人的158个组织 (亚组织)的467个细胞类型的13,605个Marker基因，和鼠的81个组织 (亚组织)的389个细胞类型的9, 148个Marker基因，CellMarker数据库可搜索，可浏览，可下载。
+
+== Human Cell Landscape ==
+网站：https://db.cngb.org/HCL/
+参考文献：  Han, X. et al. Construction of a human cell landscape at singlecell level. Nature https://doi.org/10.1038/s41586-020-2157-4 (2020).
+
+HCL是由浙江大学团队打造的人类细胞谱图平台，包含60种人体组织和7种细胞系的细胞，跨越胚胎和成年两个时期，涵盖八大系统的人类细胞图谱。该成果于2020年3月份发表于Nature，作者开发了scHCL单细胞比对系统，可帮助鉴定人类细胞类型。
+其中几大功能介绍如下：
+
+== Human Cell Atlas：人类细胞图谱（HCA）计划 ==
+网站：Human Cell Atlas
+参考文献：
+人类细胞图谱（Human Cell Atlas）计划是一项与“人类基因组计划”相媲美的大型国际合作项目（比如华大基因、扎克伯克、南方科技大学等名企名人名校都参加在内），致力于建立一个健康人体所包含的所有细胞的参考图谱，包括细胞类型、数目、位置、相互关联与分子组分等，旨在全面解码人体所有细胞的类型、数目、位置、相互关联与分子组成等，构建细胞基因表达等高维数学特性的精细图谱，建成人体发育、生理、病例的完善和精细的参照系，最终建立全息生命信息网络。这项计划目前已经得到了不同类型的图谱。已收录33个组织、289位供体、450,0000个单细胞的测序数据，并在持续更新中。
+
+== Human Protein Atlas的single cell type atlas ==
+网站：https://www.proteinatlas.org/humanproteome/celltype
+参考文献：
+HPA最近又出了一个新的板块叫做”single cell type atlas”,替换原有的”Cell Type”。该板块包含了来自13个人体组织的单细胞RNA测序数据，共192个细胞类型。可以检索不同细胞类型中基因的数目，以及聚类umap图和表达柱状图，并配有免疫组化切片、空间蛋白表达等结果。
+
+== Mouse Cell Atlas：小鼠细胞图谱 ==
+网站：Mouse Cell Atlas
+参考文献：Han, X. et al. Mapping the Mouse Cell Atlas by Microwell-Seq . Cell https://doi.org/10.1016/j.cell.2018.02.001 (2018)
+郭国骥团队设计出了基于琼脂糖材料的高通量单细胞捕获系统。以此为基础研发的Microwell-seq高通量单细胞测序平台，在提升现有单细胞技术精确度的同时，大大降低了单细胞测序文库的构建成本。并且由Microwell-Seq绘制的scMCA可以清楚地显示每个单个细胞的分化，病变和衰老。郭国骥团队的细胞测序还涵盖了哺乳动物体内的各种主要细胞类型，并对每一种器官内的组织细胞亚型，基质细胞亚型，血管内皮细胞亚型，和免疫细胞亚型进行了详细的描述。
+
+== JingleBells（链接不上） ==
+网站：http://jinglebells.bgu.ac.il
+参考文献：
+JingleBells是标准化单细胞RNA-Seq数据集的存储库，用于在单细胞水平上进行分析和可视化。用户在JingleBells上可以直接下载到单细胞数据的BAM文件。
+
+== Tabula Muris：小鼠单细胞分析项目 ==
+网站：https://tabula-muris.ds.czbiohub.org
+参考文献：https://www.nature.com/articles/s41586-018-0590-4
+分析代码：https://github.com/czbiohub/tabula-muris
+数据集下载：https://figshare.com/projects/Tabula_Muris_Transcriptomic_characterization_of_20_organs_and_tissues_from_Mus_musculus_at_single_cell_resolution/27733
+Tabula Muris是斯坦福大学Chan Zuckerberg Biohub，VA Palo Alto医疗保健系统中心以及加州大学旧金山分校的研究人员对小鼠的整个生命周期内来自20个器官的529823个细胞进行单细胞RNA测序，生成了一个Tabula Muris Senis图谱，同期发表在Nature杂志上，所建立的数据库。他们使用两种方法从20个小鼠器官中分离出100,000多个细胞。第一种方法称为荧光激活细胞分选(FACS)，用于分离44,949个细胞，第二种是微流体液滴技术，用55,656个细胞。在相对较低的覆盖范围内对每个器官的数千个细胞进行了调查，为研究人员提供健康小鼠细胞生物学的路线图。
+
+== PanglaoDB：人类和小鼠单细胞数据库 ==
+网站：https://panglaodb.se/index.html
+参考文献：Oscar Franzén, Li-Ming Gan, Johan L M Björkegren, PanglaoDB: a web server for exploration of mouse and human single-cell RNA sequencing data, Database, Volume 2019, 2019, baz046, doi:10.1093/database/baz046
+PanglaoDB，这是2019年年初瑞典和美国的研究人员共同开发、发布的一个单细胞转录组数据库。包含了超过1000个单细胞实验的预处理和预计算分析，涵盖了大多数主要的单细胞平台和分析流程，基于来自各种组织和器官的超过400万个细胞。它包含了6000多个marker基因，可用于细胞分群注释的marker数据库，数据主要源于已经公开发表的单细胞转录组数据。PanglaoDB可以让用户查询和探索细胞类型、遗传途径和调控网络。它是由，致力于探索人类和小鼠的单细胞转录组数据，该数据库的优点是适合零基础的人使用、探索。
+
+== CancerSEA：癌症单细胞数据库 ==
+网站：http://biocc.hrbmu.edu.cn/CancerSEA/
+参考文献：CancerSEA: a cancer single-cell state atlas. Nucleic Acids Res. 2019.
+CancerSEA是一个旨在单细胞水平上全面探索癌细胞的不同功能状态的多功能网站，涉及14个细胞功能状态，是25种癌症类型的900个癌症单细胞。
+
+== CDCP：细胞组学数据坐标平台 ==
+网址：https://db.cngb.org/cdcp/
+参考文献：
+19个项目，6452个样本，6种生物。
+CDCP（细胞组学数据坐标平台）共享和集成复杂的单细胞数据集，并提供单细胞分析工具和可视化服务，以促进和使研究人员能够访问和探索已发布的单细胞数据集。
+
+== SCPortalen：单细胞数据库 ==
+网址：http://single-cell.clst.riken.jp
+参考文献：Abugessaisa I., Noguchi S., Böttcher M., Hasegawa A., Kouno T., Kato S.,Tada Y., Hiroki U., Abe K., Shin JW., Plessy C., Carninci P., Kasukawa T.; SCPortalen: human and mouse single-cell centric database, Nucleic Acids Research, Volume 46, Issue D1, 4 January 2018, Pages D781–D787, https://doi.org/10.1093/nar/gkx949s
+人类和小鼠单细胞中心数据库。当前该网站收录了人类79种细胞类型的20761个单细胞以及小鼠119种细胞类型的46385个单细胞的单细胞转录组数据。
+
+== SignatureDB：B细胞数据库 ==
+网址：https://lymphochip.nih.gov/signaturedb/
+参考文献：
+
+== Betsholtzlab的单细胞数据库 ==
+
+=== 成年小鼠大脑和肺血管和血管周围细胞的基因表达数据库 ===
+网址：http://betsholtzlab.org/VascularSingleCells/database.html
+参考文献：1.Vanlandewijck, M., He, L. et al. A molecular atlas of cell types and zonation in the brain vasculature. Nature, 554, 475-480 (2018).
+2. He, L., Vanlandewijck, M. et al. Data Descriptor: Single cell RNAseq of mouse brain and lung vascular and vessel-associated cell types. Scientific Data, Volume 5, Article number: 180160 (2018)
+构建了小鼠脑和肺血管及血管相关细胞类型数据库, 数据库包含脑的3436个单细胞单细胞转录组以及小鼠肺的1504个单细胞转录组。
+
+=== 成年周细胞缺乏Pdgfbret/ret小鼠大脑内皮细胞基因表达数据库 ===
+网址：https://betsholtzlab.org/Publications/RetECscRNAseq/database.html
+参考文献：https://pubmed.ncbi.nlm.nih.gov/33375813/
+
+=== 从多个器官分离的成年小鼠成纤维细胞和血管壁细胞的基因表达数据库 ===
+网址：https://betsholtzlab.org/Publications/FibroblastMural/database.html
+参考文献：https://pubmed.ncbi.nlm.nih.gov/32769974/
+
+== PlantscRNAdb：植物单细胞数据库 ==
+网址：http://ibi.zju.edu.cn/plantscrnadb/
+参考文献：Hongyu Chen, Xinxin Yin, Longbiao Guo, Jie Yao, Yuwen Ding, Xiaoxu Xu, Lu Liu, Qian-Hao, Zhu, Qinjie Chu*, Longjiang Fan*. PlantscRNAdb: A Database for Plant Single-cell RNA Analysis. 2021. Unpublished
+植物单细胞marker gene数据库，通过PlantscRNAdb数据库，研究者可以更加高效和准确地分析植物scRNA数据。PlantscRNAdb数据库目前涵盖了已开展单细胞研究的4个模式植物（拟南芥、水稻、番茄和玉米），提供了多种来源的细胞类型标记基因信息，如早期实验、RNA-Seq和scRNA-Seq等途径获得的标记基因。目前提供的标记基因中，大多数（> 90％）来自最近的植物scRNA表达差异鉴定。为明确这类标记基因的可信度等级，樊龙江团队重新分析scRNA数据，并将鉴定出的标记基因进行了分类：当特定细胞类型中某个标记基因的读序数占该基因读序总数的80％以上时，即该标记基因的表达主要由这一特定细胞类型贡献，记为“Marker＃1”（即“Marker80”），否则记为“Marker＃2”。
+此外，通过标准化处理，PlantscRNAdb提供了全基因组水平细胞类型之间或对照处理之间基因表达及其差异信息。针对大多数非模式植物物种可用的细胞类型标记基因非常少，难以确定这些物种细胞类型等，PlantscRNAdb还提供了一个在线BLAST工具，通过在其近源模式物种标记基因中查找同源候选基因的方法，克服上述分析困难。
+
+== LnCeCell：单细胞lncRNA和ceRNA测序 ==
+网址：http://www.bio-bigdata.net/LnCeCell/
+对单细胞lncRNA和ceRNA分析感兴趣的话可以关注。
+LnCeCell对来自25种癌症的数千种细胞的细胞特异性ceRNA调控的整理，包含：
+(i)>9000个实验支持的肿瘤转移、复发、预后、循环和耐药性的lncRNA生物标志物；
+(ii)原发性、恶性和转移性癌细胞和免疫细胞的细胞特异性ceRNA网络；
+(iii)从文献和相关数据源手工输入的ceRNA亚细胞位置的详细信息；
+(iv)表现出血管生成、凋亡、细胞周期、侵袭、增殖和干性等不同行为的不同细胞群集群。
+LnCeCell提供超便捷、超颜值的搜索和浏览界面，并贴心的提供了一系列灵活的工具，方便数据的检索和分析，包含：在不同细胞群中发现的ceRNAs的全局图、ceRNAs的亚细胞位置、可视化单个细胞中失调的ceRNA网络、查看每个细胞的功能状态、识别ceRNA的失调功能、识别ceRNA的癌症Hallmark、进行Cox回归分析、绘制ceRNAs的生存曲线。
+
+== ColorCells：单细胞lncRNA数据库 ==
+网址：http://rna.sysu.edu.cn/colorcells/ 。
+
+== CellPhoneDB：细胞通讯 ==
+网址：https://www.cellphonedb.org/
+细胞间通讯网络研究必备，由英国Wellcome Sanger Institute的Teichmann Lab和Vento-Tormo Lab开发。需下载自行分析。
+
+== SpatialDB：单细胞空间转录组 ==
+网址：https://www.spatialomics.org/SpatialDB/
+2019年11月，中国科学院生物物理研究所高通量测序中心陈润生院士团队发布第一个单细胞空间转录组数据库及数据在线可视化平台：SpatialDB，为研究组织的空间细胞结构提供了一个资源库，并可能为理解疾病中的细胞微环境带来新的见解。其相关研究成果已发表在《Nucleic acids research》。
+SpatialDB系统收录了来自5个物种由8种空间转录组技术产生的数据，建立了空间转录组数据分析处理流程，实现了空间转录组数据的在线可视化，同时提供了空间差异表达基因及其功能富集分析的注释。包括5个物种（人类、小鼠、果蝇、秀丽隐杆线虫和斑马鱼）的24个空间转录组数据集，这些数据集由8种空间分辨转录组技术生成，包括ST、Slide-seq、LCM-seq、seqFISH、MERFISH、Liver single cell zonation、Geo-seq和Tomo-seq。
+用户可以从不同技术的所有数据集中获得目标基因的空间表达信息、浏览数据集中的空间差异表达基因及目标基因的空间表达信息、比较任意两个数据集的空间基因表达谱、也可以上传或下载数据。
+
+使用参考：Fan Z, Chen R, Chen X. SpatialDB: a database for spatially resolved transcriptomes[J]. Nucleic Acids Research, 2020, 48(D1): D233-D237.
+
+== GRNdb：基于单细胞数据构建的基因转录调控数据库 ==
+网址：http://www.grndb.com/
+转录因子及其下游靶基因形成的基因调控网络（Gene Regulatory Network, GRN）数据库。由华东师范大学等多家机构科研团队开发，是一个免费的人类和小鼠数据库，旨在方便搜索和分析转录因子(TFs)和下游靶基因(称为调控子)在各种组织/条件下形成的调控网络。
+基于已知的TF-target关系和从公共数据库收集的大规模单细胞转录组数据，以及TCGA和GTEx数据，研究人员系统地预测了184种不同生理和病理条件下的人和小鼠的GRNs，涉及超过633000个细胞和超过27700个样本。GRNdb可搜索、比较、浏览、可视化和下载77746个GRN、19687841个TF-target以及相关结合motif的预测信息。
+GRNdb：单细胞水平的基因调控网络数据库 https://my.oschina.net/u/4594634/blog/4950816
+
+== 脑细胞数据库 ==
+网址：https://web.stanford.edu/group/barres_lab/brain_rnaseq.html
+专门针对人脑单细胞构建的数据库。
+该数据库纯化了小鼠大脑皮层的神经元、星形胶质细胞、少突胶质前体细胞、新形成的少突胶质细胞、髓鞘少突胶质细胞、小胶质细胞、内皮细胞和周细胞，通过RNA测序为这八种细胞类型生成了转录组数据库。进一步通过生物信息学分析鉴定了数千种新的细胞类型富集基因和剪接异构体，这些基因和异构体将为细胞鉴定提供新的标记物。
+
+== CellTalkDB：基于文献的细胞标签 ==
+网址：http://tcm.zju.edu.cn/celltalkdb/index.php
+参考文献：https://academic.oup.com/bib/advance-article/doi/10.1093/bib/bbaa269/5955941
+CellTalkDB包含文献支持的人类和老鼠配体受体（LR）对，这些配体受体对由STRING数据库中的蛋白质-蛋白质相互作用（PPI）进行精选，并由三名评审人员在Pubmed中手动验证。
+
+== 单细胞转录组数据集 ==
+
+=== Cell Types Database：人类与小鼠大脑单细胞转录组数据库 ===
+网址：https://portal.brain-map.org/atlases-and-data/rnaseq
+参考文献：
+脑细胞数据库包含从人类和老鼠的单细胞数据中提取的生物特征调查。这是创建哺乳动物大脑细胞普查的多年期项目的一部分。
+
+=== 博德研究所的单细胞转录数据集 ===
+网址：https://singlecell.broadinstitute.org/single_cell
+参考文献：
+截止2021年6月2日，341个单细胞数据集。
+
+=== bioconductor提供的单细胞数据集 ===
+网址：https://bioconductor.org/packages/release/data/experiment/vignettes/scRNAseq/inst/doc/scRNAseq.html
+参考文献：
+
+=== EMBL的单细胞数据集 ===
+网址：https://www.ebi.ac.uk/gxa/sc/home
+参考文献：
+217个研究，18个物种，5 312 183个细胞。
+
+=== KIT（肾脏单细胞数据库） ===
+网址：http://humphreyslab.com/SingleCell/
+对一些肾脏单细胞文章进行了整理，构建了一个肾脏单细胞数据集的在线分析数据库。
+
+=== Hemberg单细胞数据集 ===
+网址：https://hemberg-lab.github.io/scRNA.seq.datasets/
+This website contains a collection of publicly available datasets used by the Hemberg Group at the Sanger Institute. 包含小鼠和人的多个组织。
+
+=== 10x官网数据集 ===
+10x Genomics 官方提供了多种测序数据，主要探究 10x Genomics 技术差异。
+单细胞转录组：https://support.10xgenomics.com/single-cell-gene-expression/datasets
+单细胞免疫vdj测序：https://support.10xgenomics.com/single-cell-vdj/datasets
+单细胞空间转录组：https://support.10xgenomics.com/spatial-gene-expression/datasets
+单细胞靶向基因转录组：https://support.10xgenomics.com/spatial-gene-expression/datasets
+
+== OmniBrowser：单细胞转录组数据库 ==
+https://omnibrowser.abiosciences.com/?from=gepia#/home

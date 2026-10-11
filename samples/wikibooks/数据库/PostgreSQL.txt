@@ -1,0 +1,68 @@
+PostgreSQL (或简称Postgres)是一个开源的关系型数据库系统。
+
+== 目录 ==
+
+=== 导论 ===
+主要特性
+支持平台
+
+=== 入门 ===
+下载和安装
+管理实例
+数据库管理工具: psql, pgAdmin, phpAdmin, ...
+配置
+备份和恢复
+
+=== 概念 ===
+架构: 在进程, 内存和文件之间合作
+逻辑视角: 集群, 数据库, Schema
+物理视角: 文件夹和文件
+事务
+ACID Paradigm
+行的可见性: 孤立级别
+多版本并发控制(MVCC): ACID Paradigm的实现
+Vacuum
+回卷和冻结
+可见性Map和自由空间Map
+预写式日志(WAL)
+
+=== 特别主题 ===
+客户服务器通信: 客户端
+客户服务器通信: 服务器端
+数据库安全性: 角色, 用户, 特权
+复制
+划分
+表空间
+升级
+词汇/ 术语
+
+=== 扩展 ===
+扩展机制
+PostGIS - 空间数据
+Foreign Data Wrappers
+BDR: 双向复制
+
+=== 实现细节 ===
+Directories and Files (see above)
+数据和索引文件的分页布局
+索引
+B树
+GIN
+BRIN
+Hash
+
+== 参见 ==
+Wikibook: SQL
+Wikipedia: PostgreSQL
+Wikibook: 从MySQL转到PostgreSQL
+PostgeSQL Wiki: Converting to PostgreSQL (DB2, Oracle, MySQL, ...)
+
+== 外部链接 ==
+PostgreSQL Homepage
+PostgreSQL Documentation (HTML, current version)
+PostgreSQL Documentation (PDF, different versions)
+PostgreSQL Wiki
+Internal details offered by an experienced DBA
+Template:Subjects/0
+Template:Subjects/0
+Template:Subjects/0

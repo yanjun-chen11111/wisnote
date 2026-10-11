@@ -1,0 +1,205 @@
+XML > 数据schemas
+
+= 学习目标 =
+完成本章内容的学习后，您应该能够：
+
+在XML文档中使用命名空间来识别不同schema文档中具有相同名字的元素。
+详细阐述在XML文档中如何使用命名空间。
+使用 <xsd:redefine>对数据类型的定义进行扩充。
+使用 <xsd:import>导入XML schema文档并将其与命名空间绑定。
+使schema模块化。
+本章将复习以往所学与XML schema相关的全部内容。
+
+= 概述 =
+在前面的章节中，我们介绍了大量关于XML schema文档以及其它主题的知识。本章将回溯先前所学内容。为此首先需要引
+入一些新的概念。XML schema文档能够规定命名空间在XML实例文档（*.xml file）中的使用方式，因此我们很有必要了
+解如何有效地使用命名空间。在前面的章节中我们曾介绍过<xsd:include>标签的使用。本章将介绍另外两种可以包含外部
+schema文档的方法，即使用<xsd:redefine> 和<xsd:import>标签。通过这几种机制（include（包含）， redefine
+（重新定义）， import（导入）），XML schemas可以实现模块化从而被方便地使用。
+
+= “A rose by any other name…”:  命名空间 =
+什么是命名空间？需要使用命名空间吗？后者的回答很简单——是。对于前者的回答就不那么简单了。命名空间的使用在
+XML中主要有两个目的：
+
+用于区分那些名称相同但来自不同schema库，具有不同含义的元素和属性。
+
+在一个单一的XML应用中，将相关的元素和属性组合起来，使它们可以很容易地被软件包识别。
+
+通过将元素、属性与URL相关联，命名空间能够区分具有相同名称的元素。比较常见的是将一个XML应用程序中的元素分配给
+一个URL（有时被称为命名空间的名称）。对于XML应用程序来说，利用多个命名空间来区别该应用程序的不同部分或任务，
+有时是十分有用的。
+
+接下来您可能会问：“如何声明被使用的命名空间呢？”有两种声明方式：
+
+默认命名空间声明：不带前缀，所有的元素和属性在该命名空间的范围内被引用，且引用时使用的名称无规范限制。
+
+                                    或者
+
+显式命名空间声明：声明时指定前缀，所有元素和属性命名时必须采用该前缀作为规范名称的一部分，以表示属于该命名空间。
+
+命名空间的名称（URL）在被引用时不能使用无效的XML字符（like /, %, ~）即使是简短的前缀也是如此。我们通常采用
+这些前缀（xsd和xsl），它们在XML schema文档和XML样式表被广泛采用。它们充当着命名空间名称的占位符（或直接引
+用）。命名空间声明将前缀与特定的命名空间名称绑定。
+
+让我们来看一个例子，当我们创建一个新的XML schema文档时，NetBeans给出的命名空间声明：
+
+图 7-1：默认的XML schema
+xmlns:xsd
+xmlns机制表示一个命名空间声明。注意，这个声明将命名空间名称"http://www.w3.org/2001/XMLSchema" 与xsd前缀绑定在了一起。
+targetNamespace
+这个声明将schema文档与目标命名空间名称"http://xml.netbeans.org/examples/targetNS".  关联起来。尽管目标命名空间
+已被声明，仍然需要以默认的命名空间或者显式的命名空间（通过与前缀绑定的方式）加以定义。
+xmlns
+注意该声明中没有使用前缀。不带冒号和前缀的xmlns机制表明这是一个默认的命名空间声明。
+elementFormDefault
+
+这一XML的代表属性用于表示在一个实例文档中被局部声明的元素是否必须被目标命名空间所规范。属性值决定了schema中
+所用元素的命名空间是否在xml文档中被隐藏。值为“unqualified”表示在XML实例文档“隐藏”该命名空间，因此在实例
+文档中仅需对目标命名空间进行命名空间声明。值为“qualified”表示任何xml实例文档必须声明其在schema文档中使用
+的每一个命名空间。该属性仅对该实例文档所应用的schema适用。为了“隐藏”包含外部schema文档的shema文档中的所有
+命名空间，每一个外部schema文档必须也将该属性设为“unqualified”。
+
+在XML文档中，可通过使用命名空间名称前缀显式定义的命名空间分辨一个元素。但是，属于默认命名空间的元素不需要使
+用前缀加以规范。请观察下面的XML文件：
+
+表 7-2:  theatre.xml
+
+假定该文件合法，其元素theatre和name都属于默认命名空间(http://www.opentourism.org/xmtext/theatres)。剩下的元素使用规范的名称（前缀：元素）来表
+明它们属于与addr前缀绑定的命名空间(http://www.opentourism.org/xmtext/address)
+
+既然所有的schema文档至少使用两个命名空间：目标命名空间，以及XML schema 命名空间（包括无命名空间的
+schemas），可用以下三种方式来设计您的shemas，它们都涉及这两种命名空间的处理：
+
+
+将XML schema 作为默认命名空间，显式地规范所有对目标命名空间组件的引用。
+
+与第一种方法相反，将目标命名空间作为默认命名空间，显式地规范所有来自XML schema命名空间的组件。
+
+
+不使用默认命名空间，显式地规范对目标命名空间组件的引用，同时也显式地规范所有来自XML schema命名空间的组件。
+
+想了解更多关于这三种方法的信息，以及它们的优缺点，请访问以下Web站点:
+http://www.xfront.com/DefaultNamespace.html
+
+我们已经基本了解了XML schema文档中命名空间的用法，那么就可以使用一些新的标签，实现在一个XML schema文档中包
+含多个XML schema库（文档）。
+
+= 对世界的重新定义: <xsd:redefine> 标签的魔力 =
+假设存在一个扩展类型库（定义了多种数据类型的XML schema文档）。<xsd:redfine> 机制允许在新的
+XML schema文档里扩展类型库（在独立XML schema文档中定义的类型）中的基本类型。请看下面这个简短的用于描述世界
+的复杂类型定义：
+
+表 7-3: XML Schema worldLib.xsd
+
+注意被包含的类型库中包括这两个复杂类型：oceanType和continentType。
+现在我们要重新定义worldType，将行星信息包含进去。请看下面的包含新的worldType定义的XML schema文档：
+
+表 7-4: XML Schema newWorldType.xsd
+
+注意，新的schema 文档不包括与原先相同的类型库，因为redefine标签将包含来自原schema文档的所有声明和定义（与
+include类似）。并且与include一样，redefine标签必须出现在类型定义与元素声明之前。
+
+这个新的XML schema 文档用于重新定义“worldType”数据类型，并将其应用于XML实例文档的元素，旋转
+（rotation）、星系（galaxy）的行星信息需要按照原schema中“worldType”复杂类型的次序被包含进来。这样，一种
+新的数据类型就出现了，我们可以用它来描述包含行星信息的世界。
+
+当然，在这样一个简单的schema文档中使用<xsd:redefine>机制也许意义不大，但是这里使用这个简单例子的目的是使我们易于了解它的使用。
+
+= 极为重要的标签：<xsd:import> tag =
+<xsd:import> 标签用于导入schema 文档以及与此schema文档所定义数据类型相关的命名空间。这使
+XML schema文档能够通过使用命名空间名称（前缀）来引用一个类型库。下面来看一个简单的描述店铺的XML 实例文档，它
+使用了多个命名空间名称：
+
+表 7-5 XML 实例文档 – store.xml
+
+来看看下面这个schema文档如何使用 <xsd:import> 标签从一个类型库（外部schema 文档）中导入数
+据类型：
+
+表 7-6: XML Schema SimpleStore.xsd
+
+与include标签、redefine标签相同，import标签可以使外部schema文档中的数据类型引入到另一个schema文档中，但
+这种引用必须在任何元素和属性声明之前进行。这些机制对于XML schemas 模块化起了非常重要的作用，它们使类型库得以
+在多个schema文档中被维护和使用。
+
+= 整体大于各个部分的总和:Schema 模块化 =
+在介绍了三种引用外部XML schemas的方法之后，我们分析一下这些机制的重要性。在编写程序代码时常常感到头痛的是代
+码的冗余问题，在自定义数据类型时同样存在这一问题。假如一个自定义数据类型已经存在并应用于某一schema文档中的元
+素，那么在新的schema文档中是应该继续使用这个数据类型，还是再创建一次？此外，如果一个简单数据类型将在多个应用
+程序中被多次重用，那么当需要这个数据类型时，是否应该采用某种方法引用它？
+
+Schema模块化的目的是检验schema的作用，选取一种或多种形式频繁使用的数据类型，创建一个类型库。需要时可不断向
+库中加入更复杂的schemas，重用类型库中的数据类型，必要时可重新定义那些数据类型。举一个重用的例子，一个消费者信
+息的schema：当不同部门仅需要消费者的部分信息时，它们使用不同的schema。但是有时即使不是所有的部门，也是大多数
+部门都需要消费者的一些特定信息，如姓名与合同信息，这些信息应该可以引入到各个部门的schema文档进行共享。
+
+Schema模块化是一种“最佳实践”（best practice）。通过建立类型库，重用和重定义库中的数据类型，XML schema
+文档将变得既不过分冗余，也易于阅读和理解。文档的可读性是十分重要的，因为使用这些schemas的并不只有你一个，让其
+他人可以轻松地理解schema文档也很重要。
+
+= “不仅要选择，还要明智地选择……”:  Schema 替代方案 =
+本书到目前为止仅仅讨论了由World Wide Web协会（W3C）定义的XML schemas。但仍然存在其它方法可以定义那些包含
+在XML实例文档中的数据，这里只提两种最流行和为人熟知的替代方法：文档类型定义（Document Type Definition，
+
+DTD）和Relax NG Schema。
+
+由于本书介绍的是W3C XML schema，所以我们不会详细描述这些替代方法。DTD是第一种用于定义包含在XML文档中的数据
+的方法，并沿用至今。如果熟悉HTML中的DTD，就会知道在XML中它们的功能是一样的，但是DTD并不善于定义XML文档中的
+特殊数据类型。而Relax NG schema则诞生较晚，具有许多与W3C XML schema相同的功能；Relax NG声称它更加简单，
+更易于掌握，但这是比较主观的看法。
+
+想了解更多的DTD相关知识，请访问://www.w3schools.com/dtd/dtd_intro.asp
+想了解更多的Relax NG相关知识，请访问:  http://www.relaxng.org/
+
+= 复习 =
+现在我们需要回过头去复习一下目前为止所学过的全部schema 数据类型、元素、属性（其中可能有些我们还未介绍过）。
+下面的表格将详细描述那些可在XML schema 中使用的XML数据类型，元素和属性：
+
+==== 简单类型 ====
+
+==== Schema 元素 ====
+  ( 来源于 http://www.w3schools.com/schema/schema_elements_ref.asp )
+
+==== Schema 数据类型的约束条件及其他 ====
+( 来源于 http://www.w3schools.com/schema/schema_elements_ref.asp )
+
+==== 实例文档属性 ====
+  这些属性在schema中无需声明
+
+= 总结 =
+在复习了主要的XML schema 数据类型、元素和属性之后，我们回顾一下本章所介绍的新概念。
+回想一下本章开头所介绍的XML命名空间，命名空间用于区分那些具有相同名称但含义不同的元素（处于不同的
+schema中）。命名空间还可以用于为一个简单的XML应用组合相关的元素和属性，，使数据处理更加简便。
+
+本章还介绍了通过使用<xsd:redefine> 标签，扩展一个已存在的来自类型库的自定义数据类
+型，以得到一个新的数据类型。含有新数据类型的schema将可用于定义该类型的新元素。
+
+另外，我们还学习了如何使用 <xsd:import> 标签来导入一个schema文档并将其与命名空间关
+联起来。导入的schema中的元素和属性可以用命名空间名称来引用（例如与命名空间名称绑定的前缀）。
+
+通过include、redefine、import机制，我们可以将不同schema中的元素、属性和数据类型引入到一个单一的
+schema内。这使我们能够灵活地将schema模块化，在需要时建立可重用和重定义的类型库。
+
+请仔细复习上一节中的表格，可以在前面的章节中找到更详尽的示例。
+
+想了解更多关于XML schema结构、数据类型和工具的知识，请访问以下网址：
+http://www.w3.org/XML/Schema
+http://www.w3schools.com/schema/default.asp
+
+= 练习 =
+
+[[The_one-to-one_relationship(XML)#Exercises|在第4章中，曾要求创建一个定义餐馆的schema文档；
+在第5章中曾要求创建一个定义特许经营类餐馆的schema
+文档。本题要求创建一个新的XML schema文档，运用redefine机制，通过添加所需的特许经营信息来扩展原先的
+餐馆数据类型。修改原先的XML 实例文档，使之成为特许经营类餐馆文档，并利用新创建的XML schema文档来验证
+其有效性。
+
+创建一个schema文档，要求包含下列表格中的类型库。创建一个新的schema文档，用于描述一个城市中的酒吧，
+通过import机制导入包含USAddressType 的schema和命名空间，并利用USAddressType来定义酒吧地址。创建一个XML实例文档，至少包括两所位于美国任意城市中的酒吧，以检验新创建的schema文档。
+
+表7-11 练习2 – 类型库 USAddress.xsd – USAddress.xsd
+
+找出第2章练习中  创建的XML实例文档和XML schema文档。把
+elementFormDefault 值改为“qualified”，并对XML实例文档作适当修改，使之能通过有效性检验。
+
+为第4章的tourGuide schema建立类型库。利用常识组合相关元素和数据类型。记住，某些数据类型可能具有重
+用性，能够被重用或重新定义。

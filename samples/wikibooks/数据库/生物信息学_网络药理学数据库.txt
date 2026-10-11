@@ -1,0 +1,83 @@
+== 药物/化合物数据库 ==
+
+=== CTD数据库 ===
+CTD数据库：https://ctdbase.org/
+Davis AP, Grondin CJ, Johnson RJ, Sciaky D, Wiegers J, Wiegers TC, Mattingly CJ The Comparative Toxicogenomics Database: update 2021. Nucleic Acids Res. 2020 Oct 17.
+CTD是一个强大的、公开可用的数据库，旨在促进对环境暴露如何影响人类健康的理解。它提供人工整理的关于化学-基因/蛋白质相互作用、化学-疾病和基因-疾病关系的信息。这些数据与功能和路径数据相结合，以帮助发展关于环境影响疾病的机制的假设。
+还有其他正在进行的项目，涉及人工整理暴露组数据和化学-表型关系，以帮助确定环境暴露导致的疾病前生物标志物。
+CTD的首次发布是在2004年11月12日。我们感谢我们强大的社区支持，并鼓励你给我们提供反馈，以便我们能够继续根据你的研究需要进行发展。
+该数据库整合大量化学物质、基因、功能表型和疾病之间相互作用数据，为疾病相关环境暴露因素及药物潜在作用机制研究提供极大便利
+该数据库主要有以下六大用途：
+
+查询和疾病相关的基因
+查询和疾病相关的化学物质
+查询与基因或蛋白相互作用的化学物质
+查询与化学物质相互作用的基因或蛋白
+查询基因\蛋白与化学物质相互作用的参考文献
+查询化学物质相关GO功能条目
+
+=== cMAP数据库 ===
+cMap数据库：https://clue.io/
+Subramanian A, et al. A Next Generation Connectivity Map: L1000 Platform And The First 1,000,000 Profiles. Cell. 2017/12/1. 171(6):1437–1452
+由Broad研究所开发，最新版本于2017年发表在Cell杂志。该数据库基于164种药物/小分子化合物和过表达或基因敲除工具处理的细胞表达谱数据，借助L1000分析平台，探讨药物/小分子化合物、基因和疾病状态之间的交互网络关系
+
+=== STITCH数据库：化合物与靶基因互作关系 ===
+STITCH数据库：http://stitch.embl.de/
+Szklarczyk D, Santos A, von Mering C, Jensen LJ, Bork P, Kuhn M. STITCH 5: augmenting protein-chemical interaction networks with tissue and affinity data. Nucleic Acids Res. 2016 Jan 4;44(D1):D380-4.
+
+=== BlindingDB数据库 ===
+BlindingDB数据库：https://www.bindingdb.org/bind/info.jsp
+
+Gilson,M.K., Liu,T., Baitaluk,M., Nicola,G., Hwang,L., and Chong,J. BindingDB in 2015: A public database for medicinal chemistry, computational chemistry and systems pharmacology Nucleic Acids Research 44:D1045-D1063 (2016).[pdf]
+Liu,T., Lin,Y., Wen,X., Jorrisen,R.N. and Gilson,M.K. BindingDB: a web-accessible database of experimentally determined protein-ligand binding affinities Nucleic Acids Research 35:D198-D201 (2007).[pdf]
+Chen,X., Lin,Y. and Gilson,M.K. The Binding Database: Overview and User's Guide Biopolymers Nucleic Acid Sci. 61:127-141 (2002).[pdf]
+Chen,X., Lin,Y., Liu,M. and Gilson,M.K. The Binding Database: Data Management and Interface Design Bioinformatics 18:130-139(2002).[pdf]
+Chen,X., Liu,M., and Gilson,M.K. Binding DB: A web-accessible molecular recognition database J. Combi. Chem. High-Throughput Screen 4:719-725(2001).[pdf]
+
+=== chEMBL数据库 ===
+chEMBL数据库：https://www.ebi.ac.uk/chembl/
+Mendez, D., Gaulton, A., Bento, A. P., Chambers, J., De Veij, M., Félix, E., Magariños, M. P., Mosquera, J. F., Mutowo, P., Nowotka, M., Gordillo-Marañón, M., Hunter, F., Junco, L., Mugumbate, G., Rodriguez-Lopez, M., Atkinson, F., Bosc, N., Radoux, C. J., Segura-Cabrera, A., Hersey, A., … Leach, A. R. (2019). ChEMBL: towards direct deposition of bioassay data. Nucleic acids research, 47(D1), D930–D940. https://doi.org/10.1093/nar/gky1075
+Davies, M., Nowotka, M., Papadatos, G., Dedman, N., Gaulton, A., Atkinson, F., Bellis, L., & Overington, J. P. (2015). ChEMBL web services: streamlining access to drug discovery data and utilities. Nucleic acids research, 43(W1), W612–W620. https://doi.org/10.1093/nar/gkv352
+
+=== PubChem数据库 ===
+PubChem数据库：https://pubchem.ncbi.nlm.nih.gov/
+
+== 中草药数据库 ==
+
+=== ETCM数据库 ===
+ETCM数据库：http://www.tcmip.cn/ETCM/index.php/Home
+Xu HY, Zhang YQ, Liu ZM, Chen T, Lv CY, Tang SH, Zhang XB, Zhang W, Li ZY, Zhou RR, Yang HJ, Wang XJ, Huang LQ. ETCM: an encyclopaedia of traditional Chinese medicine. Nucleic Acids Res. 2018 Oct 26. doi: 10.1093/nar/gky987.
+该数据库整合大量中药、配方及其成分的标准化信息，包括中药成分、药材或配方，以及各中草药的药味（酸、苦、甘、辛、咸）、药性（寒、热、温、凉、平）、归经（肺经、肝经、肾经等）和潜在靶基因信息，并基于此探索构建的中药与配方、成分、靶基因、相关通路和疾病之间的网络关系图谱。
+可见各个功能板块及其对应的数据条目，分别是：数据浏览模块（Herbs，中草药；Formulas，中药配方；Ingredients，中药有效成分；Targets，中药靶基因；Disease，相关疾病）、系统分析模块，Systematic analysis；数据库使用手册，User manual，点击进入可查看详情，并可下载该手册
+
+=== DGIdb数据库 ===
+DGIdb数据库：https://dgidb.org/
+Law, V., Knox, C., Djoumbou, Y., Jewison, T., Guo, A. C., Liu, Y., Maciejewski, A., Arndt, D., Wilson, M., Neveu, V., Tang, A., Gabriel, G., Ly, C., Adamjee, S., Dame, Z. T., Han, B., Zhou, Y., & Wishart, D. S. (2014). DrugBank 4.0: shedding new light on drug metabolism. Nucleic acids research, 42(Database issue), D1091–D1097. https://doi.org/10.1093/nar/gkt1068
+整合现有的文献报道中药物与基因互作关系，以及DrugBank、PharmGKB、Chembl、Drug Target Commons和TTD等30多个数据库中药物与基因互作关系，提供两类数据：第一类，基于文献报道的已知药物与基因相互作用关系；第二类，根据药物或基因家族之间功能、结构等特征预测的潜在药物与基因相互作用关系
+
+=== TCMID数据库 ===
+TCMID数据库：http://www.megabionet.org/tcmid/
+Huang, L., Xie, D., Yu, Y., Liu, H., Shi, Y., Shi, T., & Wen, C. (2018). TCMID 2.0: a comprehensive resource for TCM. Nucleic acids research, 46(D1), D1117–D1120. https://doi.org/10.1093/nar/gkx1028
+Xue, R., Fang, Z., Zhang, M., Yi, Z., Wen, C., & Shi, T. (2013). TCMID: Traditional Chinese Medicine integrative database for herb molecular mechanism analysis. Nucleic acids research, 41(Database issue), D1089–D1095. https://doi.org/10.1093/nar/gks1100
+TCMID数据库将中草药及配方成分与靶基因、疾病和药物进行网络药理学分析，提供配方、草药、化合物、疾病、药物和靶标6个方面信息，为药物研究提供极大便利。比如，若某种化合物和批准的药物靶向相同的蛋白质，则该化合物可能是潜在候选新药；若某种化合物和疾病共有相同下游靶基因，则包含该化合物的中草药可能是潜在候选治疗方案。
+
+=== symMap数据库 ===
+symMap数据库：http://www.symmap.org/
+Wu Y#, Zhang F#, Yang K#, Fang S, Bu D, Li H, Sun L, Hu H, Gao K, Wang W, Zhou X, Zhao Y, Chen J*. SymMap: an integrative database of traditional Chinese medicine enhanced by symptom mapping. Nucleic Acids Research 2018, 47(D1): D1110-D1117.
+整合中国传统医学（traditional Chinese medicine，TCM）与现代医学（modern medicine，MM）的药物治疗及其分子机制数据，目前收录499种中草药的19,595种化合物成份、1,717种TCM症候和961种MM症状，以及4302个靶基因和5235个疾病，之间关联性信息，展示中草药、TCM症候、MM症状、化合物成份、靶基因和疾病6大数据类型之间的网络交互关系。symMap数据库提供数据浏览、检索和下载3大功能板块，点击Help可查看数据库使用说明
+TCMSP数据库：https://old.tcmsp-e.com/tcmsp.php
+Jinlong Ru; Peng Li; Jinan Wang; Wei Zhou; Bohui Li; Chao Huang; Pidong Li; Zihu Guo; Weiyang Tao; Yinfeng Yang; Xue Xu; Yan Li; Yonghua Wang; Ling Yang. TCMSP: a database of systems pharmacology for drug discovery from herbal medicines. J Cheminformatics. 2014 Apr 16;6(1):13.
+该数据库于2014年发布，属于中草药网络药理平台，提供中草药、化合物成分、靶基因和疾病网络关系信息。与其他中草药网络关系数据库不同之处在于，该数据库提供天然化合物的药代谢动力学，包括口服生物利用度、药物相似性、水溶解度、血脑屏障和肠上皮渗透性等信息
+
+=== HERB数据库（本草组鉴） ===
+HERB数据库（本草组鉴）：http://herb.ac.cn/
+Fang, S., Dong, L., Liu, L., Guo, J., Zhao, L., Zhang, J., Bu, D., Liu, X., Huo, P., Cao, W., Dong, Q., Wu, J., Zeng, X., Wu, Y., & Zhao, Y. (2021). HERB: a high-throughput experiment- and reference-guided database of traditional Chinese medicine. Nucleic acids research, 49(D1), D1197–D1206. https://doi.org/10.1093/nar/gkaa1063
+《Nucleic Acids Research》发表了HERB数据库，中文名为“本草组鉴”。该数据库的网址为：http://herb.ac.cn/
+赵屹教授课题组在1037个评估草药/成分的高通量实验中重新分析6164个基因的表达谱，并通过将药物转录学数据集映射到CMap上，生成了中草药/成分与2837种现代药物之间的联系。
+此外，他们还从最近发表的1966篇文献中为473种中草药/成分手动挑选了1241个基因靶点和494种现代疾病，并将这些新信息与包含这些药物数据的数据库进行交叉注释。
+再结合数据库挖掘和统计推理，将12933个靶点和28212个疾病与7263种中草药和49258种成分联系起来，并提供了它们之间的6种配对关系。
+所以不管是大家想做中草药的网络药理学还是想做中草药的实验研究，不管大家研究的是肿瘤还是非肿瘤，还是给自己研究的中药找靶点，还是给自己研究的靶点找中药，这个数据库就是目前为止最全面的了！
+
+=== BATMAN_TCM数据库 ===
+BATMAN_TCM数据库：http://bionet.ncpsb.org.cn/batman-tcm/
+Liu, Z., Guo, F., Wang, Y., Li, C., Zhang, X., Li, H., Diao, L., Gu, J., Wang, W., Li, D., & He, F. (2016). BATMAN-TCM: a Bioinformatics Analysis Tool for Molecular mechANism of Traditional Chinese Medicine. Scientific reports, 6, 21146. https://doi.org/10.1038/srep21146

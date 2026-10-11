@@ -1,0 +1,105 @@
+新OLAT安装
+安装以前的准备
+OLAT需要下面软件才能运行：
+
+1、Java SDK 1.5x或更新
+2、Tomcat5.x或更新
+3、支持UTF-8字符集的数据库,注意，我们这个指南中使用的是MySQL ,数据库安装的字符集是Latin1,不是UTF-8,并设置MySQL驱动转移到UTF-8)
+4、ant1.5或更新
+下面的软件是可选的，取决于你的安装
+
+1：openfire
+2: MRTG
+3: Webalizer
+OLAT已经在linux,MacOSX,Windows系统中经过测试。我们自己的生产版本是linux服务器
+假设你想运行一个即时消息系统，请仔细考量你的内存，一个消息系统的用户平均要消耗3个线程，每个线程大概占用256k,你大概需要花费1G内存来给100个IM并发用户来服务。
+关于以上工具的安装我就不介绍了，请读者自己google
+好了，开始介绍安装olat
+
+创建数据库
+使用工具创建（只适于linux或unix,不适用于window),执行/olat/bin/dbAndUserSetup.sh,可以自动为mysql创建olat安装需要的数据库和用户。
+手动创建，以mysql4.x为例
+   #mysql_admin create olat -u root
+   #mysql -u root -p
+   #>use mysql;
+   #mysql>insert into user(Host,user,Password) values("loaclhost","olat","olat");
+   #mysql>insert into db     values("localhost","olat","olat","Y","Y","Y","Y","Y","Y","Y","Y","Y","Y","Y","Y","Y","Y");
+  #>FLUSH PRIVILEGES;
+
+mysql5.0
+  #mysql -u root -p
+  #use mysql;
+  #mysql> create database olat;
+  #mysql> create user 'olat'@'localhost' identified by 'olat';
+  #mysql> grant all on olat.* to 'olat'@'localhost' identified by 'olat';
+  #mysql> flush privileges
+
+postgresql
+   #>psql -U postgres
+   %pgql>create user olat password "olat";
+   %pgsql>create database olat owner olat
+
+数据库准备完毕
+
+获取源代码
+你可以到www.olat.org主页去下载源代码
+创建一个安装目录(假设是/opt)
+将得到的源代码解压到安装目录
+    unzip OLAT-X.X.X.zip -d /opt
+
+安装之前的配置
+复制一份 build.properties.default ，名称为build.properties
+  #>cd /opt/olat
+  #>cp build.properties.default build.properties
+
+修改 build.properties,使他适合你的安装需要
+  base.dir=
+  userdata.dir=
+  archive.dir=
+
+我的修改以后的文件变成：
+
+  base.dir=/opt/olat
+  #Absolute path for userdata.dir
+  userdata.dir=/opt/olat/olatdata
+  #Absolute path for archive.dir
+  archive.dir=${userdata.dir}/deleted_archive
+
+如果你使用的是mysql数据库，那么其他的你几乎可以不用修改
+如果你的用的其他的，请将有关数据库连接部分属性作相应更改
+主要要修改数据库的连接
+另外需要注意的是你的tomcat.home要根据你的系统实际更改
+我忘了修改，结果编译过程出现了错误。
+
+执行ant config-all创建必要的配置文件
+   #>ant config-all
+
+拷贝conf目录下的server.xml到tomcat的conf目录下
+如果你的tomcat有多个应用，拷贝之前记得备份server.xml到其他地方，以免其他服务无法实现。
+
+   #>sudo cp /opt/olat/conf/server.xml /var/lib/tomcat55/conf/
+
+现在开始的是编译
+   #>sudo ant install
+
+大概需要4-5分钟吧，编译过程完毕，请执行下面命令进行部署
+
+   #sudo ant deploy
+
+安装数据文件
+如果是mysql ,直接执行
+   #>sudo ant dbsetup
+
+postgreql数据库请执行
+   #>sudo ant dbsetup_postgreSQL
+
+现在基本安装完毕，重新启动tomcat,到浏览器看看你的成果吧
+   http://localhost:8080/olat/
+
+附注:
+
+   默认的用户        口令
+    administrator   olat
+    gast                gast
+
+回到[[1]]首页

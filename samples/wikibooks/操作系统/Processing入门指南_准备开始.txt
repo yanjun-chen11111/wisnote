@@ -1,0 +1,19 @@
+在开始Processing编程之前，你需要一个集成开发环境（IDE）。它的名字也叫Processing。
+
+== 系统需求 ==
+Processing运行于现代个人计算机之上，因此你需要：
+
+一台电脑，台式计算机或者笔记本电脑
+比较新的GNU/Linux，Mac OS X，或者Windows（32位或64位操作系统均可）
+注意：默认下载内包含JDK的Processing，这样你就不必额外安装JDK或OpenJDK。若你的计算机上已有JDK或OpenJDK，希望减少Processing的空间占用，则可以下载不包含JDK的版本。
+
+== 下载 ==
+在Processing网站下载Processing的压缩包，下载地址为：http://processing.org/download/。
+请注意选择与你的操作系统一致的版本，如Ubuntu 64位操作系统应该选择Linux 64-bit，Windows 32位操作系统应该选择Windows 32-bit。
+在本读本编写时，Processing的稳定版本是1.5.1，而测试版为2.0 Beta 7。为了保证最新的特性能为你所用，这本教科书按照2.0版本来写。所以请下载使用最新的2.0版本。
+
+== 安装 ==
+与传统软件不同，Processing不需要安装。你刚刚下载的是一个压缩包，解压之后，便可直接运行文件夹中的“processing”程序运行它。
+对于Processing，比较好的方法是将此文件夹放置在一个合适的地方：在Windows操作系统中，可移动到D:\processing；在GNU/Linux操作系统中，可移动到/usr/local/processing。这样可以更好地保护Processing程序文件的完整性，以免你在定期清理“下载”文件夹的时候将之删除。
+为Processing程序创建一个启动链接会更加便利。在Windows中，你可以为程序文件夹中的processing程序创建一个桌面快捷方式；在GNU/Linux操作系统中，你可以为processing可执行程序创建一个启动链接，放在桌面上；在KDE桌面中，你还可以为它创建一个菜单项。
+现在，你就可以直接双击processing或者它的快捷方式（启动链接）运行Processing IDE了。

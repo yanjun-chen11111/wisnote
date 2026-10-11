@@ -1,0 +1,98 @@
+计算机程序设计 > C#
+
+C#（发音为"See Sharp"）是一个是微软推出的一种基于.NET框架的、面向对象的高级编程语言。
+
+== 第零部分 概述 ==
+C#从C语言家族中发展而来，并引入了一些强有力的特性，如委托（可以看做是一种类型安全的函数指针），函数编程语言中的lambda表达式，简单的单继承模式（而不是C++中的多继承）以及提供一些其他类C语言会提供的体验，让初学者可以很快的熟悉这门语言。与Java类似，这是一门面向对象的语言，带有强大的类库，支持异常处理，不同类型的多态，并将接口和实现分离的一门编程语言。这些特性，辅以强有力的开发工具以及跨平台的支持，使得C#成为很多软件开发项目的首选：快速原型开发；网络工程以及对可靠性有很高要求的项目。测试框架如NUnit使得C#适合于测试驱动的开发，并成为一个适于极限编程的语言。强类型使得其可以避免很多常见于弱类型语言的错误。
+
+== 第一部分 C#语言 ==
+
+=== 基础 ===
+C#语言概述 简述C#的历史与发展、特点、与常见的几种程序设计语言的比较，以及推荐学习的一些书籍和资源。
+開發環境 SDK與常见的C#开发工具。
+HelloWorld 一个简单的HelloWorld入门程序及其解释。
+变量与常量
+数据类型 C#内置的常用数据类型以及数组等。
+命名习惯
+控制语句
+异常
+语法 C#中的表达式、语句以及流程控制。
+运算符 C#内置的运算符。
+注释方法
+空值null
+匿名方法（Lambda函数）
+
+=== 类 ===
+命名空间 命名空间的含义、作用与使用方法。
+类
+对象
+类成员 类成员的分类介绍，包括字段、属性、方法、事件等。
+属性
+封装与访问控制  C#中的访问控制机制以及为什么要使用访问控制。包括类的访问控制，类成员的访问控制。
+
+=== 高级主题 ===
+继承
+接口
+委托与事件
+抽象类
+部分类
+泛型
+扩展方法
+对象生命期
+设计模式
+
+=== 例子 ===
+K-Means++
+
+=== 关键字 ===
+Template:C sharp/Keywords
+
+== 第二部分 基础应用 ==
+图形界面
+文件和IO
+网络编程
+数据库编程ADO.Net
+XML
+格式化
+
+== 第三部分 高级特性 ==
+字符集与国际化
+多线程与同步
+COM互操作
+ASP.NET
+Web服务
+特性与反射
+设计模式初步
+实体框架
+日志
+
+== .NET编程 ==
+.NET Framework Overview
+.NET Framework类库综述.
+.NET Core Overview
+.NET Core类库综述.
+Console Programming
+控制台输入输出
+Windows Forms
+GUI编程使用Windows Forms.
+Collections
+有效管理大数据
+Threading
+并发与同步.
+async
+异步调用与并发编程
+Marshalling
+与unmanaged代码通信
+
+== 外部链接 ==
+
+C# Tutorial
+An Introduction to Mono Development by Andrew Troelsen
+C# Environment setup Visual C# environment setup details from MSDN
+C# FAQ C# FAQ, Blogs and Forums.
+C# Language Specification download page at ECMA
+C# Programming Tutorial
+C# Programming Tutorial Collection
+C# Yellow Book (via pdf download)
+Microsoft Visual Studio Community Edition : A free development environment created by Microsoft.
+Mono Project : C# Development Environment for Linux, Windows, and other platforms.

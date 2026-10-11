@@ -1,0 +1,136 @@
+OCCI是一套用于访问Oracle数据库的C++ API。设计目的是提供一个小的良好封装的类与界面的集合，易于使用。大量特性服务于关系访问（类似于JDBC）、对象关系访问与伸缩性。完全支持SQL/PLSQL执行。支持所有Oracle数据类型与大对象（LOB）类型。支持数据库的元数据访问。
+
+== API需要包含的头文件与库文件 ==
+头文件occi.h（以及隐式使用occiCommon.h，occiControl.h，occiData.h，occiObjects.h）。库文件oraocci12.lib或oraocci12d.lib，必须对应Release与Debug版本。使用的dll包括oci.dll、oraocci12d.dll、oraociei12.dll、oraons.dll。
+以上均包含在Oracle Instant Client中。
+
+== Environment类 ==
+Environment实例指出：
+
+应用程序模式：OBJECT/THREADED/MUTEXED
+对象cache设置
+OCCI类的内存堆
+可以创建“连接池”： createConnectionPoll
+示例：
+
+== 数据类 ==
+OCCI定义了一些数据类，如Number,Date,IntervalYM,Timestamp，Bytes，以方便对Oracle数据类型的支持。为支持大对象，定义了类Bfile，Clob，Blob。
+
+=== PObject类 ===
+PObject类包含以下方法：
+
+fush();
+Connection *getConnection();从一个实例化的永久对象中返回连接。
+isLocked();判断永久对象是否被锁（TRUE或FALSE）。
+isNull();判断永久对象是否为空（TRUE或FALSE）。
+Lock(PObject::LockOption  lock_option);在数据库中锁住一个对象，其中lock_option取值为OCCI_LOCK_WAIT、OCCI_LOCK_NOWAIT。
+markDelete();删除数据库中的永久对象。
+markModified();修改永久对象。
+PObject &operator(constPObject &obj);赋值（对象）。
+operator delete(void*obj,size_t size);删除对象，但不能删除数据库中的对象。
+*operator new(size_t size);创建临时对象。
+*operator new(size_t size,constConnection *x,const string &tablename,const char *type_name);创建永久对象。
+pin();
+setNull();设置对象为空。
+unmark();不标记永久对象为删除或修改。
+unpin(UnpinOption mode);其中，mode的取值为OCCI_PINCOUNT_RESET、OCCI_PINCOUNT_DECR。
+
+=== SQLException类 ===
+SQLException类提供错误代码及其错误信息，包含以下方法：
+getErrorCode();返回数据库中的错误编码。
+getMessage();返回错误信息，没有则为空。
+
+== Connection类 ==
+Commit();提交事务。
+createStatement
+flushCache();
+rollback();事务的回滚。
+ terminateStatement
+示例：
+
+== ConnectionPool类 ==
+ConnectionPoll类提供了C++程序与指定数据库间的连接池，包含以下方法：
+createConnection(const string&username,const string &password);创建一个连接。
+getBusyConnections();返回连接池中被占用的连接数量。
+getMaxConnections();返回连接池的最大连接数。
+getMinConnections();返回连接池的最小连接数。
+getOpenConnections();返回连接池中已经被打开的连接数。
+getPollName();返回连接池的名称。
+getTimeOut();返回连接池的超时时间。
+setErrorOnBusy();设置异常，当连接池处于繁忙或达到最大连接数后。
+serPoolSize(unsigned intminConn,unsigned int maxConn,unsigned int incrConn);设置连接池的大小，其中参数minConn是最小连接数，maxConn是最大连接数，incrConn是递增连接数。
+setTimeOut();设置超时时间。
+terminateConnection(Connection  *conn);断开连接。
+
+== Statement类 ==
+Statement对象
+
+execute：执行任何SQL语句，返回状态
+executeUpdate：返回Insert/Update/Delete的行数
+executeQuery：返回ResultSet
+executeArrayUpdate(unsigned intarrayLength);同时修改多条记录，前面必须使用了setDataBuffer()方法设置一个数量或设置了一个流（stream）。
+可以使用形如:1、:2这样的占位符，用setXXX成员函数绑定参数。用getXXX成员函数返回参数。isNull判断第X个值是否为空。isTruncated判断第X个值是否被截取。
+对DML（INSERT/UPDATE/DELETE）,可以一次操作多行：
+
+SetMaxIterations:设置最多的行数
+SetMaxParamSize：设置某个字符串参数的长度上限
+addIteration：增加一行数据的绑定
+执行PL/SQL的函数/过程/block时，用setXXX绑定参数，setNull某参数设置为空。用registerOutParam指出输出参数并用setMaxParamSize指出尺寸，用getXXX获取输出参数的值。执行execute。
+批量处理非查询语句时，首先必须使用stmt->setMaxIterations(unsigned int maxnum)方法设置最大的批处理数；然后使用setMaxParamSize(unsignedint paramindex,int paramsize)方法设置对应参数的大小，对于有固定长度的参数可以不必重新设置，如int,double；然后绑定参数使用setXXX()方法，每循环一次必须使用stmt->addIteration()方法，再进行下一次循环，直到最后一次。
+其它函数：
+
+addIteration();增加一个循环。
+closeResultSet(ResultSet *rs);关闭一个结果集。
+closeStream(Stream  *stream);关闭一个已定义的流。
+getAutoCommit();返回是否事务自动提交。
+getResultSet();得到一个结果集（ResultSet）。
+getSQL();返回当前的SQL语句。
+getUpdateCount();返回被更新的数量。
+setAutoCommit(bool autocommit);设置事务是否自动提交。
+setSQL(const string &sql);设置一个SQL语句。
+Status();返回当前的状态。
+
+== ResultSet类 ==
+ResultSet对象：
+属性Status：取值为DATA_AVAILABLE、STREAM_DATA_AVAILABLE、END_OF_FETCH
+对所有类型获取/设置值的统一方法：
+
+setXXX：Statement对象
+getXXX：Statement对象与ResultSet对象
+也可以使用流方式绑定/获取数据：
+
+setCharacterStreamMode：结果集中设定流模式
+getStream：结果集的当前行建立一个流对象
+readBuffer: 流对象拷贝数据到缓冲区
+用户数据缓冲区可以极小化数据拷贝。
+
+-数组DML：Statement:executeArrayUpdate(int nRows), Statement::setDataBuffer
+-数组获取：ResultSet::next(int nRows), ResultSet::setDataBuffer
+其他函数：
+
+cancel();取消结果集。
+closeStream(Stream  *stream);关闭一个流。
+getMaxColumnSize(unsigned intcolIndex);返回某列包含的数据量。
+getRowid(unsigned intcolIndex);返回rowid值。
+isNull(unsigned int colIndex);判断值是否为空。
+isTruncated(unsigned intcolIndex);判断值是否被删
+
+== 对象-关系数据库特性 ==
+支持Oracle对象-关系数据库特性。包括对象表（Object table)或对象类型列(object type columns)。OTT可支持生成相应的C++类的源文件。
+支持Oracle的VARRAY与Nested Table数据类型
+
+== MetaData ==
+通过MetaData对象，对数据库对象（表、过程、类型等）与查询结果的MetaData访问。
+
+== Oracle Advanced Queue ==
+
+== 国际化 ==
+国际化支持方面，Environment::createEnvironment(string charset, string ncharset)；client characterset用于CHAR类型。National characterset用于NCHAR类型。
+查询数据库CHAR类型与NCHAR类型的具体定义：
+
+例如,
+
+Environment::createEnvironment("ZHS16GBK", "OCCIUTF16")；//"AL16UTF16"
+
+应通过setDatabaseNCHARParam()先把Statement实例的某个参数设为NCHAR/NVARCHAR类型，然后setUString()绑定参数。
+UString数据类型表示UCS-2编码字符串。所有成员函数都有UString的重载版本。在Windows平台，UString等价于std::wstring数据类型。对于Unicode应用程序，OTT产生的CHAR/VARCHAR属性为UString类型的成员变量。

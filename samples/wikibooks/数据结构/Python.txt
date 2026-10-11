@@ -1,0 +1,142 @@
+Python 是一种面向对象、直译式计算机程序设计语言，也是一种功能强大而完善的通用型语言，已经具有十多年的发展历史。它可以运行于Microsoft Windows, Apple Mac OS X, GNU/Linux, BSD和很多其他的操作系统上。
+
+== 介绍 ==
+
+Self Help
+
+== 概念 ==
+基本语法
+数据类型
+数值
+字符串
+字节数组及相关类型
+列表
+元组
+字典
+集合
+变量和字符串
+运算符
+流程控制
+函数
+迭代器
+生成器
+作用域与名字空间
+错误
+异常
+输入输出
+模块
+类
+编程习惯用法
+
+=== 高级概念 ===
+描述符
+装饰器
+上下文管理器
+反射
+元类
+性能
+提示与技巧
+内部实现
+
+== 用Python写程序 ==
+创建
+基础数学
+序列型数据结构
+决策控制
+条件表达式
+分支 match-case
+循环
+源文件和注释
+用户界面和互交
+模块和使用
+创建和处理文件
+处理文本
+游戏编程
+编程风格
+
+== 模块 ==
+
+=== 标准库模块 ===
+基础性标准库
+正则表达式
+External commands
+XML工具
+多进程
+线程
+协程
+GUI Programming
+Tkinter
+CGI interface
+WSGI web programming
+Internet
+Email
+Networks
+Socket编程
+Math
+文件 (I/O)
+网页内容获取
+struct
+单元测试
+日志
+dataclass
+typing
+
+=== 第三方库模块 ===
+Database Programming
+numpy
+Image(PIL或pillow)
+pandas
+pydantic
+游戏编程
+Qt4
+Dbus
+pyFormex
+matplotlib
+Sorted Container Types
+3rd Party Internet
+加密登录
+Excel
+MS Word
+TensorFlow
+
+=== 编写扩展模块 ===
+Extending with Perl
+Extending with C
+Extending with C++
+Extending with Pyrex
+Extending with ctypes
+
+== 工具与平台环境 ==
+打包为可执行程序
+pip包管理
+Conda包管理
+jupyter notebook
+
+== 注释 ==
+官方文档
+官方入门
+
+== 参考链接 ==
+
+简明Python教程
+Python books available for free download
+Non-programmers python tutorial donated to this project: Non-Programmer's Tutorial for Python
+Dive into Python
+The Python.org documents section
+How to think Like a Computer Scientist: Learning with Python
+How to think Like a (Python) Programmer
+A Byte of Python
+ActiveState Python Cookbook
+Text Processing in Python
+Dev Shed's Python Tutorials
+The Blog of a Python Adventurer - A nonprogrammer attempts to learn python. Follow his adventures.
+MakeBot - Simple Python IDE designed for teaching game programming to kids.
+Snake Wrangling for Kids - Learning to Program with Python
+SPE - Stani's Python Editor
+python tutorials
+Python IDEs - When coding, half of the work may be done by your IDE ... so choosing a good one might be helpful
+Python Tutorials - Python Tutorials
+Python Videos at ShowMeDo, covering four IDEs, programming tools, introductions to coding and popular Python projects
+Python Examples - Some exciting python examples
+"Python for Non-Programmers": a list on the Python wiki of various tutorials.
+Wikiversity:Topic:Python （英文）
