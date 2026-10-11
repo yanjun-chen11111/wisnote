@@ -8,13 +8,14 @@
 - `wisnote/`：RAG 笔记后端（检索 / 问答 / 解析 / 社区）
 - `ui/`：Streamlit 前端（会话 Cookie 登录）
 - `docs/`：设计文档（会话安全、检索评测、问答模式等）
-- `.codebuddy/skills/engineering-coach/`：内置的「工程教练」协作技能
+- `.codebuddy/skills/engineering-coach/`：内置「工程教练」协作技能
+- `.codebuddy/skills/test-pilot/`：内置「工程级测试」技能
 
 ## 技术栈
 
 - 后端：Python
 - 前端：Streamlit
-- 技能：CodeBuddy 工程教练技能（`engineering-coach`）
+- 技能：CodeBuddy 工程教练（`engineering-coach`）+ 工程级测试（`test-pilot`）
 
 ## 快速开始（本地运行）
 
@@ -25,17 +26,20 @@ pip install -r requirements.txt
 .venv\Scripts\python.exe -m streamlit run ui/app.py
 ```
 
-## 内置技能：engineering-coach（工程教练）
+## 内置技能（engineering-coach + test-pilot）
 
-本仓库在 `.codebuddy/skills/engineering-coach/` 内置了一个 CodeBuddy 技能。
-克隆仓库后即可在对话中**自动生效**，无需额外安装。
+本仓库在 `.codebuddy/skills/` 下内置两个 CodeBuddy 技能，克隆后即**自动生效**，无需安装：
 
-它的作用是：把没有工程背景的产品想法翻译成工程问题，参照业界成熟做法给方案、
-讲清取舍，并说明该问题在真实公司开发中是否典型、成熟团队怎么解——目标是做出
-**生产级产品**而非玩具。技能说明见 `references/examples.md`。
+- **engineering-coach（工程教练）**：需求 / 想法阶段，把非工程化诉求翻译成工程问题、讲清取舍、锚定业界做法；
+  也作为「导师」先对齐需求再动手。技能说明见其 `references/examples.md`。
+- **test-pilot（工程级测试）**：实现 / 验证阶段，按规格推导测试用例、用五大设计技术 + 分层覆盖、自适应项目框架、强制自检漏测。
 
-该技能也独立发布在 `github.com/yanjun-chen11111/codebuddy-engineering-coach`，
-可单独下载使用。
+两者配合：先用 engineering-coach 把需求聊清楚、定方案，再用 test-pilot 把功能测到位。
+完整用法见 **[`docs/技能使用指南.md`](docs/技能使用指南.md)**。
+
+两个技能也都独立发布，可单独分发：
+- engineering-coach: `github.com/yanjun-chen11111/codebuddy-engineering-coach`
+- test-pilot: `github.com/yanjun-chen11111/codebuddy-test-pilot`
 
 ## 协作者指南
 
@@ -76,4 +80,5 @@ Git Credential Manager 会记住凭据，之后推送免输。
 ### 3. 单独维护技能仓库
 
 项目的技能以子目录形式随本仓库一起提交；若你想单独维护/发布技能，
-请克隆独立的技能仓库 `github.com/yanjun-chen11111/codebuddy-engineering-coach` 再提交。
+请克隆对应的独立技能仓库再提交：engineering-coach `github.com/yanjun-chen11111/codebuddy-engineering-coach`，
+test-pilot `github.com/yanjun-chen11111/codebuddy-test-pilot`。
