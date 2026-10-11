@@ -4,6 +4,7 @@ from pathlib import Path
 
 from wisnote.parsers.base import Block
 from wisnote.parsers.docx_parser import parse_docx
+from wisnote.parsers.image_parser import parse_image
 from wisnote.parsers.pdf_parser import parse_pdf
 from wisnote.parsers.pptx_parser import parse_pptx
 from wisnote.parsers.txt_parser import parse_txt
@@ -16,6 +17,12 @@ SUPPORTED = {
     ".docx": parse_docx,
     ".txt": parse_txt,
     ".md": parse_txt,
+    ".jpg": parse_image,
+    ".jpeg": parse_image,
+    ".png": parse_image,
+    ".gif": parse_image,
+    ".bmp": parse_image,
+    ".webp": parse_image,
 }
 
 

@@ -211,7 +211,9 @@ def page_docs() -> None:
         _sel = st.selectbox("课程分类", [_new] + _courses, index=0)
         course = st.text_input("新课程名称", placeholder="如：操作系统") if _sel == _new else _sel
         _is_img = bool(up) and up.name.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"))
-        auto_sum = st.checkbox("上传后自动生成摘要与标签", value=True) if not _is_img else False
+        auto_sum = st.checkbox("上传后自动生成摘要与标签", value=True)
+        if _is_img:
+            st.caption("图片会先 OCR 识别文字：识别到即参与 AI 检索与摘要；识别不到则仅存档预览")
         if st.button("开始入库") and up is not None:
             suffix = Path(up.name).suffix.lower()
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -220,10 +222,10 @@ def page_docs() -> None:
             try:
                 r = ingest_document(uid, tmp_path, course_name=course or None, title=Path(up.name).stem)
                 if r["chunks"] == 0:
-                    st.success(f"入库成功：{r['title']}（图片资料，仅存档与预览，不参与 AI 检索）")
+                    st.warning(f"入库成功：{r['title']}（图片未识别出文字，仅存档与预览，不参与 AI 检索）")
                 else:
                     st.success(f"入库成功：{r['title']}（段落 {r['blocks']} → 块 {r['chunks']}）")
-                if auto_sum:
+                if auto_sum and r["chunks"] > 0:
                     with st.spinner("AI 正在生成摘要与标签（CPU 约 20~40 秒）..."):
                         summarize_document(uid, r["document_id"])
                     st.success("摘要与标签已生成")
@@ -290,8 +292,8 @@ def page_docs() -> None:
                     except Exception as e:
                         st.error(f"更新失败：{e}")
 
-            if d["file_type"] in ("jpg", "jpeg", "png", "gif", "bmp", "webp"):
-                st.caption("🖼️ 图片资料：仅存档与预览，不参与 AI 检索 / 摘要")
+            if d["file_type"] in ("jpg", "jpeg", "png", "gif", "bmp", "webp") and not d.get("chunk_count"):
+                st.caption("🖼️ 图片资料：未识别出文字，仅存档与预览，不参与 AI 检索 / 摘要")
             else:
                 s = get_summary(uid, d["id"])
                 if s["summary"]:
@@ -324,7 +326,11 @@ def render_sources(sources: list[dict]) -> None:
                 with st.expander("🖼️ 查看原文高亮", expanded=False):
                     try:
                         info = get_document_info(s["document_id"])
-                        if not info or not can_highlight(info["file_type"]):
+                        _ft = (info or {}).get("file_type", "")
+                        if _ft in ("jpg", "jpeg", "png", "gif", "bmp", "webp"):
+                            st.image(info["file_path"], caption="来源图片（回答引用的文字提取自该图）", use_column_width=True)
+                            continue
+                        if not info or not can_highlight(_ft):
                             st.info("仅 PDF 支持原文高亮预览，该来源为文本/Word 资料")
                             continue
                         col_a, col_b = st.columns(2)

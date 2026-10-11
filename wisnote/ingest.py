@@ -48,16 +48,16 @@ def ingest_document(
     if not file_path.exists():
         raise FileNotFoundError(f"文件不存在：{file_path}")
 
-    # 1. 解析 + 切块（图片类仅存档预览，跳过解析与向量化）
+    # 1. 解析 + 切块（图片经 OCR 提取文字；识别不出则降级为仅存档）
     is_image = file_path.suffix.lower() in IMAGE_EXTS
-    if is_image:
-        blocks = []
-        chunks = []
-    else:
-        blocks = parse_file(file_path)
-        if not blocks:
-            raise ValueError(f"未能从「{file_path.name}」中提取到文本内容")
+    blocks = parse_file(file_path)
+    if blocks:
         chunks = chunk_blocks(blocks)
+    elif is_image:
+        blocks = []
+        chunks = []  # 图片未识别出文字：仅存档预览，不参与检索
+    else:
+        raise ValueError(f"未能从「{file_path.name}」中提取到文本内容")
 
     # 2. 原文件归档到用户目录
     ensure_dirs()
@@ -131,7 +131,8 @@ def list_documents(user_id: int, course_name: str | None = None) -> list[dict]:
     """列出用户资料（含课程名）；传入 course_name 可按课程筛选"""
     sql = (
         "SELECT d.id, d.title, d.filename, d.file_path, d.file_type, d.status, d.ref_count, "
-        "       d.visibility, d.created_at, c.name AS course_name "
+        "       d.visibility, d.created_at, c.name AS course_name, "
+        "       (SELECT COUNT(*) FROM chunks k WHERE k.document_id = d.id) AS chunk_count "
         "FROM documents d LEFT JOIN courses c ON c.id = d.course_id "
         "WHERE d.user_id = ?"
     )
@@ -180,15 +181,16 @@ def update_document(user_id: int, document_id: int, new_file_path: Path | str) -
     if row is None:
         raise ValueError("资料不存在或不属于当前用户")
 
-    # 先解析新文件，失败则原资料保持不变（图片类无文本，跳过解析）
-    if new_file_path.suffix.lower() in IMAGE_EXTS:
+    # 先解析新文件，失败则原资料保持不变（图片经 OCR；识别不出降级为仅存档）
+    is_image = new_file_path.suffix.lower() in IMAGE_EXTS
+    blocks = parse_file(new_file_path)
+    if blocks:
+        chunks = chunk_blocks(blocks)
+    elif is_image:
         blocks = []
         chunks = []
     else:
-        blocks = parse_file(new_file_path)
-        if not blocks:
-            raise ValueError(f"未能从「{new_file_path.name}」中提取到文本")
-        chunks = chunk_blocks(blocks)
+        raise ValueError(f"未能从「{new_file_path.name}」中提取到文本")
 
     old_path = Path(row["file_path"])
 
