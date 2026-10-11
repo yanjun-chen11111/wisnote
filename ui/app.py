@@ -202,9 +202,16 @@ def page_docs() -> None:
     uid = require_user()
 
     with st.expander("上传新资料", expanded=False):
-        up = st.file_uploader("选择文件（PDF / PPT / Word / 文本）", type=[e.lstrip(".") for e in SUPPORTED_EXTS])
-        course = st.text_input("课程分类", placeholder="如：操作系统")
-        auto_sum = st.checkbox("上传后自动生成摘要与标签", value=True)
+        up = st.file_uploader(
+            "选择文件（PDF / PPT / Word / 文本 / 图片）",
+            type=[e.lstrip(".") for e in SUPPORTED_EXTS],
+        )
+        _courses = [c["name"] for c in list_courses(uid)]
+        _new = "＋ 新建课程…"
+        _sel = st.selectbox("课程分类", [_new] + _courses, index=0)
+        course = st.text_input("新课程名称", placeholder="如：操作系统") if _sel == _new else _sel
+        _is_img = bool(up) and up.name.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".bmp", ".webp"))
+        auto_sum = st.checkbox("上传后自动生成摘要与标签", value=True) if not _is_img else False
         if st.button("开始入库") and up is not None:
             suffix = Path(up.name).suffix.lower()
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as tmp:
@@ -212,7 +219,10 @@ def page_docs() -> None:
                 tmp_path = tmp.name
             try:
                 r = ingest_document(uid, tmp_path, course_name=course or None, title=Path(up.name).stem)
-                st.success(f"入库成功：{r['title']}（段落 {r['blocks']} → 块 {r['chunks']}）")
+                if r["chunks"] == 0:
+                    st.success(f"入库成功：{r['title']}（图片资料，仅存档与预览，不参与 AI 检索）")
+                else:
+                    st.success(f"入库成功：{r['title']}（段落 {r['blocks']} → 块 {r['chunks']}）")
                 if auto_sum:
                     with st.spinner("AI 正在生成摘要与标签（CPU 约 20~40 秒）..."):
                         summarize_document(uid, r["document_id"])
@@ -235,10 +245,16 @@ def page_docs() -> None:
             col1, col2 = st.columns([4, 1])
             with col1:
                 st.subheader(f"#{d['id']} {d['title']}")
+                _type = "图片" if d["file_type"] in ("jpg", "jpeg", "png", "gif", "bmp", "webp") else d["file_type"]
                 st.caption(
-                    f"类型 {d['file_type']} | 课程 {d['course_name'] or '-'} | "
+                    f"类型 {_type} | 课程 {d['course_name'] or '-'} | "
                     f"被引用 {d['ref_count']} 次 | 上传于 {d['created_at']}"
                 )
+                if d["file_type"] in ("jpg", "jpeg", "png", "gif", "bmp", "webp"):
+                    try:
+                        st.image(d["file_path"], caption=d["title"], use_column_width=True)
+                    except Exception:
+                        pass
             with col2:
                 vis = st.selectbox(
                     "可见性",
@@ -274,18 +290,21 @@ def page_docs() -> None:
                     except Exception as e:
                         st.error(f"更新失败：{e}")
 
-            s = get_summary(uid, d["id"])
-            if s["summary"]:
-                st.write(f"**AI 摘要**：{s['summary']}")
-                if s["tags"]:
-                    st.write("**知识点标签**：" + " · ".join(f"`{t}`" for t in s["tags"]))
-            elif st.button("生成摘要与标签", key=f"sum_{d['id']}"):
-                with st.spinner("AI 正在生成（CPU 约 20~40 秒）..."):
-                    try:
-                        summarize_document(uid, d["id"])
-                        st.rerun()
-                    except LLMError as e:
-                        st.error(f"生成失败：{e}")
+            if d["file_type"] in ("jpg", "jpeg", "png", "gif", "bmp", "webp"):
+                st.caption("🖼️ 图片资料：仅存档与预览，不参与 AI 检索 / 摘要")
+            else:
+                s = get_summary(uid, d["id"])
+                if s["summary"]:
+                    st.write(f"**AI 摘要**：{s['summary']}")
+                    if s["tags"]:
+                        st.write("**知识点标签**：" + " · ".join(f"`{t}`" for t in s["tags"]))
+                elif st.button("生成摘要与标签", key=f"sum_{d['id']}"):
+                    with st.spinner("AI 正在生成（CPU 约 20~40 秒）..."):
+                        try:
+                            summarize_document(uid, d["id"])
+                            st.rerun()
+                        except LLMError as e:
+                            st.error(f"生成失败：{e}")
 
 
 # ---------------- 智能问答 ----------------

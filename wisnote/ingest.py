@@ -8,7 +8,7 @@ import uuid
 from pathlib import Path
 
 from wisnote.chunker import chunk_blocks
-from wisnote.config import UPLOADS_DIR, ensure_dirs
+from wisnote.config import UPLOADS_DIR, ensure_dirs, IMAGE_EXTS
 from wisnote.db import get_conn
 from wisnote.parsers import parse_file
 from wisnote.vectorstore import get_store
@@ -48,11 +48,16 @@ def ingest_document(
     if not file_path.exists():
         raise FileNotFoundError(f"文件不存在：{file_path}")
 
-    # 1. 解析 + 切块（先验证可解析，失败则不产生任何数据）
-    blocks = parse_file(file_path)
-    if not blocks:
-        raise ValueError(f"未能从「{file_path.name}」中提取到文本内容")
-    chunks = chunk_blocks(blocks)
+    # 1. 解析 + 切块（图片类仅存档预览，跳过解析与向量化）
+    is_image = file_path.suffix.lower() in IMAGE_EXTS
+    if is_image:
+        blocks = []
+        chunks = []
+    else:
+        blocks = parse_file(file_path)
+        if not blocks:
+            raise ValueError(f"未能从「{file_path.name}」中提取到文本内容")
+        chunks = chunk_blocks(blocks)
 
     # 2. 原文件归档到用户目录
     ensure_dirs()
@@ -74,24 +79,26 @@ def ingest_document(
             (user_id, course_id, doc_title, file_path.name, str(dest), file_type),
         )
         document_id = int(cur.lastrowid)
-        conn.executemany(
-            "INSERT INTO chunks (document_id, user_id, chunk_index, page, para_index, text) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            [
-                (document_id, user_id, c.chunk_index, c.page, c.para_index, c.text)
-                for c in chunks
-            ],
-        )
+        if chunks:
+            conn.executemany(
+                "INSERT INTO chunks (document_id, user_id, chunk_index, page, para_index, text) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                [
+                    (document_id, user_id, c.chunk_index, c.page, c.para_index, c.text)
+                    for c in chunks
+                ],
+            )
         conn.commit()
     finally:
         conn.close()
 
-    # 4. 向量化入库（失败则回滚 SQLite 记录，避免脏数据）
-    try:
-        get_store().add_chunks(user_id, document_id, chunks)
-    except Exception:
-        _delete_document_rows(document_id, dest)
-        raise
+    # 4. 向量化入库（图片类无切块，跳过；失败则回滚 SQLite 记录，避免脏数据）
+    if chunks:
+        try:
+            get_store().add_chunks(user_id, document_id, chunks)
+        except Exception:
+            _delete_document_rows(document_id, dest)
+            raise
 
     conn = get_conn()
     try:
@@ -123,7 +130,7 @@ def _delete_document_rows(document_id: int, file_path: Path) -> None:
 def list_documents(user_id: int, course_name: str | None = None) -> list[dict]:
     """列出用户资料（含课程名）；传入 course_name 可按课程筛选"""
     sql = (
-        "SELECT d.id, d.title, d.filename, d.file_type, d.status, d.ref_count, "
+        "SELECT d.id, d.title, d.filename, d.file_path, d.file_type, d.status, d.ref_count, "
         "       d.visibility, d.created_at, c.name AS course_name "
         "FROM documents d LEFT JOIN courses c ON c.id = d.course_id "
         "WHERE d.user_id = ?"
@@ -173,11 +180,15 @@ def update_document(user_id: int, document_id: int, new_file_path: Path | str) -
     if row is None:
         raise ValueError("资料不存在或不属于当前用户")
 
-    # 先解析新文件，失败则原资料保持不变
-    blocks = parse_file(new_file_path)
-    if not blocks:
-        raise ValueError(f"未能从「{new_file_path.name}」中提取到文本")
-    chunks = chunk_blocks(blocks)
+    # 先解析新文件，失败则原资料保持不变（图片类无文本，跳过解析）
+    if new_file_path.suffix.lower() in IMAGE_EXTS:
+        blocks = []
+        chunks = []
+    else:
+        blocks = parse_file(new_file_path)
+        if not blocks:
+            raise ValueError(f"未能从「{new_file_path.name}」中提取到文本")
+        chunks = chunk_blocks(blocks)
 
     old_path = Path(row["file_path"])
 
@@ -210,19 +221,21 @@ def update_document(user_id: int, document_id: int, new_file_path: Path | str) -
                 document_id,
             ),
         )
-        conn.executemany(
-            "INSERT INTO chunks (document_id, user_id, chunk_index, page, para_index, text) "
-            "VALUES (?, ?, ?, ?, ?, ?)",
-            [
-                (document_id, user_id, c.chunk_index, c.page, c.para_index, c.text)
-                for c in chunks
-            ],
-        )
+        if chunks:
+            conn.executemany(
+                "INSERT INTO chunks (document_id, user_id, chunk_index, page, para_index, text) "
+                "VALUES (?, ?, ?, ?, ?, ?)",
+                [
+                    (document_id, user_id, c.chunk_index, c.page, c.para_index, c.text)
+                    for c in chunks
+                ],
+            )
         conn.commit()
     finally:
         conn.close()
 
-    get_store().add_chunks(user_id, document_id, chunks)
+    if chunks:
+        get_store().add_chunks(user_id, document_id, chunks)
 
     conn = get_conn()
     try:

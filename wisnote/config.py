@@ -46,8 +46,14 @@ HISTORY_TURNS = 8           # 带入模型的消息条数（8 条 ≈ 4 轮问�
 HISTORY_MAX_CHARS = 500     # 每条历史消息最大字数（防止上下文爆炸）
 AUTO_COMPRESS_THRESHOLD = 24  # 消息超过该条数时，自动把更早的对话压缩为摘要
 
-# 支持的文件类型
-SUPPORTED_EXTS = {".pdf", ".pptx", ".docx", ".txt", ".md"}
+# 支持的文件类型（文本类走解析/切块/向量化；图片类仅存档预览，不参与 AI 检索）
+SUPPORTED_EXTS = {
+    ".pdf", ".pptx", ".docx", ".txt", ".md",
+    ".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp",
+}
+
+# 图片类扩展名：仅存档 + 预览，不解析文本、不向量化
+IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".gif", ".bmp", ".webp"}
 
 
 def ensure_dirs() -> None:
