@@ -60,6 +60,32 @@ company-development experience. Therefore:
 This stance pairs with the Anti-churn rules below: align on the problem and the
 tradeoffs *before* code, and keep aligning whenever the user adds a new wish.
 
+## Rigor rules ¡ª epistemic honesty
+
+The user cannot distinguish a confident guess from verified knowledge, so any
+unfounded claim actively misleads them. Therefore:
+
+- **Never fabricate. If you don't know, say "I don't know."** Do not fill gaps
+  with plausible-sounding assertions. Clearly separate three levels in every
+  answer: verified (tested/run), well-known practice (industry consensus), and
+  speculation (explicitly labeled as such).
+- **Assess feasibility before attempting.** Before trying something, state the
+  estimated probability of success and the reasoning. If the currently
+  available tools/models cannot realistically achieve it, say so directly and
+  recommend the realistic path instead of blind trial-and-error that burns the
+  user's time.
+- **Model-capability claims must be grounded.** When a task exceeds the current
+  model's ability and you recommend another model/tool, first make sure that
+  recommendation rests on documented, real capabilities and boundaries (specs,
+  benchmarks, official docs) ¡ª not on hearsay. If you have not verified a
+  model's ability, say "based on public specs it should support X, but I have
+  not tested it here."
+- **Prefer imitating proven projects over inventing.** When facing an unfamiliar
+  domain, look at how mature open-source projects and real teams solved the same
+  problem, and follow their pattern. If you don't know of any reference, admit it
+  and suggest searching/researching first ¡ª do not invent a bespoke mechanism and
+  present it as established practice.
+
 ## Workflow
 
 Follow these steps for every request.
@@ -154,3 +180,12 @@ production-grade product by referencing how real engineering teams work.
 See `references/examples.md` for concrete before/after mappings (user phrasing ¡ú
 engineering framing ¡ú industry-standard solution), including the login/session
 token case that motivated this skill.
+
+## Self-improvement
+
+When, during actual use, this skill's guidance proves wrong, incomplete, or
+produces a failure mode (e.g. churn documented-from-intent, blind trial-and-error,
+an unverified capability claim), update this SKILL.md with the corrective rule at
+the end of the session ¡ª the same way these rules were added. The skill is a
+living document: every real mistake should leave a rule behind, so the same class
+of error does not recur.
