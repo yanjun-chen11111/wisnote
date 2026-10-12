@@ -26,6 +26,15 @@ pip install -r requirements.txt
 .venv\Scripts\python.exe -m streamlit run ui/app.py
 ```
 
+## 运行测试
+
+```powershell
+pip install -r requirements-dev.txt
+.venv\Scripts\python.exe -m pytest tests/ -q --cov=wisnote.ingest --cov=wisnote.explain --cov=wisnote.parsers.image_parser --cov-report=term-missing
+```
+
+测试自动使用临时数据库与临时向量库，不会触碰 `data/` 下的真实数据。
+
 ## 内置技能（engineering-coach + test-pilot）
 
 本仓库在 `.codebuddy/skills/` 下内置两个 CodeBuddy 技能，克隆后即**自动生效**，无需安装：
