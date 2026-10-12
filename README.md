@@ -35,6 +35,9 @@ pip install -r requirements-dev.txt
 
 测试自动使用临时数据库与临时向量库，不会触碰 `data/` 下的真实数据。
 
+最新一轮的可视化报告（用例明细 + 逐行覆盖率）见 [`docs/test-report/index.html`](docs/test-report/index.html)，
+本地用浏览器直接打开即可。
+
 ## 内置技能（engineering-coach + test-pilot）
 
 本仓库在 `.codebuddy/skills/` 下内置两个 CodeBuddy 技能，克隆后即**自动生效**，无需安装：

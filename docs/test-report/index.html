@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>WisNote 测试报告总览</title>
+<style>
+  body { font-family: "Microsoft YaHei", sans-serif; max-width: 960px; margin: 24px auto; color: #222; line-height: 1.6; }
+  h1 { border-bottom: 3px solid #4a90d9; padding-bottom: 8px; }
+  .ok { color: #1a7f37; font-weight: bold; }
+  .cards { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+  .card { flex: 1; min-width: 180px; border: 1px solid #ddd; border-radius: 10px; padding: 14px 18px; background: #fafbfc; }
+  .card .num { font-size: 30px; font-weight: bold; color: #1a7f37; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+  th, td { border: 1px solid #ddd; padding: 8px 10px; text-align: left; font-size: 14px; }
+  th { background: #f0f4f8; }
+  .bar { display: inline-block; height: 12px; border-radius: 6px; background: #4a90d9; vertical-align: middle; }
+  .links a { display: inline-block; margin: 6px 16px 6px 0; padding: 8px 16px; background: #4a90d9; color: #fff; border-radius: 6px; text-decoration: none; }
+  .note { color: #666; font-size: 13px; }
+  ul { margin: 6px 0; }
+</style>
+</head>
+<body>
+<h1>WisNote 测试报告总览</h1>
+<p class="note">生成时间：2026-10-12 · 环境：Windows / Python 3.13 / pytest 9.1 ·
+测试自动使用临时数据库，不影响 <code>data/</code> 真实数据</p>
+
+<div class="cards">
+  <div class="card"><div class="num">41 / 41</div>用例通过 <span class="ok">全部通过</span></div>
+  <div class="card"><div class="num">90%</div>总覆盖率（分支）</div>
+  <div class="card"><div class="num">6</div>测试套件</div>
+  <div class="card"><div class="num">48s</div>总耗时</div>
+</div>
+
+<h2>模块覆盖率</h2>
+<table>
+  <tr><th>模块</th><th>语句数</th><th>未覆盖</th><th>覆盖率</th><th></th></tr>
+  <tr><td><code>wisnote/ingest.py</code></td><td>155</td><td>4</td><td>97%</td><td><span class="bar" style="width:194px"></span></td></tr>
+  <tr><td><code>wisnote/parsers/image_parser.py</code></td><td>54</td><td>2</td><td>96%</td><td><span class="bar" style="width:192px"></span></td></tr>
+  <tr><td><code>wisnote/explain.py</code></td><td>81</td><td>23</td><td>72%</td><td><span class="bar" style="width:144px"></span></td></tr>
+</table>
+<p class="note">注：<code>explain.py</code> 未覆盖部分主要为旧版非流式 <code>explain()</code>（仅 CLI 使用，见漏测报告）。</p>
+
+<h2>套件明细</h2>
+<table>
+  <tr><th>套件</th><th>用例数</th><th>设计技术</th><th>验证内容</th></tr>
+  <tr><td><code>test_image_parser.py</code></td><td>9</td><td>等价类 + 边界值 + 真实 OCR</td><td>打印体识别 / 段落聚合 / 空白图 / score 字符串兼容回归 / 置信度 0.5 边界 / 引擎异常</td></tr>
+  <tr><td><code>test_courses.py</code></td><td>5</td><td>等价类 + 幂等性</td><td>新建 / 同名去重 / 空白等价 / 用户隔离 / 大小写行为钉死</td></tr>
+  <tr><td><code>test_ingest_pipeline.py</code></td><td>10</td><td>决策表（类型×有无文字）+ 边界</td><td>图片全流水线 / 降级 / 空文本零残留回滚 / .PNG 大写 / 空课程名→NULL</td></tr>
+  <tr><td><code>test_update_document.py</code></td><td>3</td><td>状态迁移</td><td>文本→文本替换 / 文本→图片 chunk 归零 / 不存在文档报错</td></tr>
+  <tr><td><code>test_explain_routing.py</code></td><td>10</td><td>决策表（source×资料）</td><td>notes 缺料不调模型 / auto 降级前缀 / llm 不检索 / 引用计数+1 / 相似度 0.29-0.30 边界</td></tr>
+  <tr><td><code>test_pipeline_gaps.py</code></td><td>4</td><td>错误路径</td><td>向量化失败回滚三清 / 删除三清 / 讲解存档写入会话</td></tr>
+</table>
+
+<h2>漏测报告（故意不测 / 已知缺口）</h2>
+<ul>
+  <li><b>故意不测</b>：<code>explain.py</code> 旧版非流式函数（CLI 专用，建议后续删除统一走新版）</li>
+  <li><b>故意不测</b>：auth / chat / community / rag 等模块（属全项目回归，另行立项）</li>
+  <li><b>故意不测</b>：Streamlit UI 层（业界惯例：核心库自动化 + UI 人工冒烟）</li>
+  <li><b>已知缺口</b>：并发写（SQLite 单机场景风险低）、登录 sessionStorage 刷新问题（需浏览器 E2E）、OCR 手写体（无稳定 oracle）</li>
+</ul>
+
+<h2>详细报告</h2>
+<div class="links">
+  <a href="report.html">用例级报告（每条用例耗时与结果）</a>
+  <a href="coverage/index.html">覆盖率报告（逐行高亮）</a>
+</div>
+<p class="note">本地重新生成：<code>pytest tests/ --cov=wisnote.ingest --cov=wisnote.explain --cov=wisnote.parsers.image_parser --cov-report=html:docs/test-report/coverage --html=docs/test-report/report.html --self-contained-html</code></p>
+</body>
+</html>
