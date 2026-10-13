@@ -9,7 +9,7 @@ from wisnote.parsers.pdf_parser import parse_pdf
 from wisnote.parsers.pptx_parser import parse_pptx
 from wisnote.parsers.txt_parser import parse_txt
 
-__all__ = ["Block", "parse_file", "SUPPORTED"]
+__all__ = ["SUPPORTED", "Block", "parse_file"]
 
 SUPPORTED = {
     ".pdf": parse_pdf,
