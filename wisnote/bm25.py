@@ -27,6 +27,9 @@ class BM25Index:
             conn.close()
         self.docs = [dict(r) for r in rows]
         self.tokens = [self._tokenize(d["text"]) for d in self.docs]
+        # 词频预计算：search() 高频调用（UI 每次提问都要跑），临时重建
+        # 全库 Counter 是 O(全库×段长)，大语料下每查询数百毫秒，预计算后建一次换查询快几个量级
+        self.tfs = [Counter(t) for t in self.tokens]
         self.N = len(self.docs)
         self.avgdl = (sum(len(t) for t in self.tokens) / self.N) if self.N else 0.0
         self.df: Counter = Counter()
@@ -49,8 +52,8 @@ class BM25Index:
         k1, b = 1.5, 0.75
         q_tokens = self._tokenize(query)
         scores: list[float] = []
-        for toks in self.tokens:
-            tf = Counter(toks)
+        for i, toks in enumerate(self.tokens):
+            tf = self.tfs[i]
             dl = len(toks)
             s = 0.0
             for t in q_tokens:
