@@ -43,6 +43,7 @@ bge-small-zh 嵌入 + ChromaDB + SQLite。核心卖点：本地、免费、离�
 .venv\Scripts\python.exe -m ruff check <改动文件> --fix
 .venv\Scripts\python.exe -m bandit -r wisnote scripts -q --skip B310,B608
 ```
+- **功能变化必须同步更新根目录 `CHANGELOG.md`**（按功能类别追加一条，格式见文件头）
 - 模型行为主张必须 E2E 实测（测 chunk 数、测位置真伪，不测不下结论）
 - 文档同步：改行为必须同步 docs/ 对应文档
 - PowerShell 内联 python 引号会被吞，长脚本写临时文件到 C:/temp/
