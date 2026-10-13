@@ -47,6 +47,11 @@ def search_notes(
         for r in rows:
             titles[r["id"]] = dict(r)
 
+    # 防御性过滤：document_id 指向已删除文档的命中是 Chroma 历史残留
+    # （早期删除功能未同步清向量库，僵尸向量无法自愈），直接丢弃；
+    # 否则会以"未知文档"身份混进结果，挤占 top-k 名额并污染引用展示。
+    hits = [h for h in hits if h["document_id"] is None or h["document_id"] in titles]
+
     for h in hits:
         info = titles.get(h["document_id"], {})
         h["title"] = info.get("title", "未知文档")

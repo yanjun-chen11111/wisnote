@@ -7,6 +7,8 @@
 """
 
 
+import re
+
 from wisnote.chat import auto_name_session, build_context_messages, get_messages
 from wisnote.config import AUTO_COMPRESS_THRESHOLD, SEARCH_TOP_K
 from wisnote.llm import chat, chat_stream
@@ -15,13 +17,16 @@ from wisnote.search import search_notes
 SYSTEM_PROMPT = """你是"智能笔记助手"，只根据用户自己的笔记内容回答问题，像一个耐心的学霸同学给同学讲解。
 严格遵守以下规则：
 1. 只能使用【笔记片段】中的信息，不得使用外部知识，不得编造；
-2. 回答中每处用到片段内容的地方，用方括号编号标注来源，例如：进程调度算法包括……[1]；
-3. 如果所有片段都无法回答问题，必须回答："笔记中没有相关内容，我无法据此回答。"然后说明还缺什么资料；
-4. 回答要**完整展开，不要压缩成一句话**。按下面的骨架组织（片段里有的部分才写，没有的跳过）：
+2. 引用笔记内容的地方，只标注方括号编号，如：进程调度算法包括……[1]；
+   **不要自己写页码、段落号或文件名**（系统会在编号后自动补全真实位置，你写了反而会出错）；
+3. 转述关键原文时用"原文：'……'"标出，便于读者去笔记核对；
+4. 如果所有片段都无法回答问题，必须回答："笔记中没有相关内容，我无法据此回答。"然后说明还缺什么资料；
+5. 回答要**完整展开，不要压缩成一句话**。按下面的骨架组织（片段里有的部分才写，没有的跳过）：
    - 先用一两句话直接给出结论或定义；
    - 再逐条展开关键点：条件、性质、分类、步骤、原理，每条都来自笔记原文；
    - 笔记里有例子或对比的一并转述；
-5. 能分点就分点，用中文。"""
+   - 每个小节写完就停，**不要重复已经写过的内容**；
+6. 能分点就分点，用中文。"""
 
 NO_CONTEXT_ANSWER = "笔记中没有相关内容，我无法据此回答。请先上传包含该知识点的笔记。"
 
@@ -59,9 +64,67 @@ def build_messages(question: str, hits: list[dict]) -> list[dict]:
         {
             "role": "user",
             "content": f"【笔记片段】\n{context}\n\n【问题】\n{question}\n\n"
-                       f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），并在句末标注来源编号。",
+                       f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），"
+                       f"引用处标注来源编号及位置（照抄片段头部来源行）。",
         },
     ]
+
+
+_CITE_RE = re.compile(r"\[(\d+)\]")
+
+
+def cite_label(s: dict) -> str:
+    """来源编号 → 带真实位置的完整引用标签（程序生成，杜绝模型编造页码）"""
+    loc = f"第{s['page']}页" if s.get("page") else "无页码"
+    if s.get("para_index") is not None:
+        loc += f" 第{s['para_index']}段"
+    return f"[{s['index']}]《{s['title']}》{loc}"
+
+
+def enrich_citations(text: str, sources: list[dict]) -> str:
+    """把回答中的 [n] 替换为带真实位置的完整引用（确定性替换，零幻觉）
+
+    为什么不让模型自己写位置：E2E 实测 1.7B 模型会编造页码
+    （真实来源"无页码 第1段"，模型写出"第12页 第3段"），
+    编造的引用位置比没有位置更误导用户。
+    """
+    by_idx = {s["index"]: s for s in sources}
+    return _CITE_RE.sub(
+        lambda m: cite_label(by_idx[int(m.group(1))]) if int(m.group(1)) in by_idx else m.group(0),
+        text,
+    )
+
+
+def _enrich_stream(chunks, sources: list[dict]):
+    """流式版引用增强：编号可能被拆在 chunk 交界，按最后一个"["切保留区
+
+    修复记录：第一版无条件保留末尾 4 字符，编号横跨刷新边界时
+    半个标记（"["）已被吐出、永远无法匹配（实测 yield 出 '条件['）。
+    正确规则：完整编号立即替换；未闭合的"["及其后内容保留到下一 chunk。
+    """
+    by_idx = {s["index"]: s for s in sources}
+    buf = ""
+    for c in chunks:
+        buf += c
+        while True:
+            m = _CITE_RE.search(buf)
+            if not m:
+                break
+            yield buf[: m.start()]
+            n = int(m.group(1))
+            yield cite_label(by_idx[n]) if n in by_idx else m.group(0)
+            buf = buf[m.end():]
+        # 从最后一个"["开始的内容可能是半截编号，保留到下个 chunk 再判定
+        cut = buf.rfind("[")
+        if cut == -1:
+            if buf:
+                yield buf
+            buf = ""
+        else:
+            yield buf[:cut]
+            buf = buf[cut:]
+    if buf:
+        yield enrich_citations(buf, sources)
 
 
 def max_semantic_similarity(hits: list[dict]) -> float:
@@ -114,7 +177,7 @@ def ask(
     from wisnote.ingest import bump_ref_counts
     bump_ref_counts({h.get("document_id") for h in hits})
 
-    answer = chat(build_messages(question, hits))
+    answer = enrich_citations(chat(build_messages(question, hits)), sources)
     result = {
         "question": question,
         "answer": answer,
@@ -318,7 +381,8 @@ def stream_ask(
                 "role": "user",
                 "content": f"【笔记片段】\n{build_context(hits)}\n\n【问题】\n"
                            f"{question_for_model}\n\n"
-                           f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），并在句末标注来源编号。",
+                           f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），"
+                           f"引用处标注来源编号及位置（照抄片段头部来源行）。",
             },
         ]
         used_mode = "notes"
@@ -335,7 +399,7 @@ def stream_ask(
         result_holder.update({"sources": sources, "mode": used_mode, "hits": hits, "refused": False})
 
     full: list[str] = []
-    for chunk in chat_stream(messages, options={"num_predict": 768}):
+    for chunk in _enrich_stream(chat_stream(messages, options={"num_predict": 768}), sources):
         full.append(chunk)
         yield chunk
 

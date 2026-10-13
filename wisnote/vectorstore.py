@@ -74,6 +74,23 @@ class VectorStore:
     def delete_document(self, user_id: int, document_id: int) -> None:
         self.collection(user_id).delete(where={"document_id": document_id})
 
+    def purge_orphans(self, user_id: int, live_doc_ids: set[int]) -> int:
+        """清理指向已删除文档的僵尸向量，返回清理条数
+
+        来源：早期版本的删除功能未同步清向量库，残留向量无法自愈
+        （诊断脚本实测发现指向已删文档的条目）。由维护脚本或入库层调用。
+        """
+        col = self.collection(user_id)
+        data = col.get(include=["metadatas"])  # 单次调用：ids 与 metadatas 顺序保证配对
+        orphan_ids = [
+            cid
+            for cid, m in zip(data["ids"], data["metadatas"])
+            if m.get("document_id") not in live_doc_ids
+        ]
+        if orphan_ids:
+            col.delete(ids=orphan_ids)
+        return len(orphan_ids)
+
     # ---------- 检索 ----------
     def search(self, user_id: int, query: str, top_k: int = 5) -> list[dict]:
         col = self.collection(user_id)
