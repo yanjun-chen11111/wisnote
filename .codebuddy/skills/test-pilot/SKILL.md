@@ -54,6 +54,44 @@ After generating tests, explicitly list what is NOT covered - error paths,
 concurrency, security boundaries, performance limits - and propose additions. A
 suite that only covers the happy path is not engineering-grade.
 
+### 4. Defect-escape prevention - the test-quality toolkit
+
+Passing tests do NOT prove the tests can catch bugs. "All green in CI, bugs in
+production" is the classic failure this section exists to prevent. Before
+calling a suite engineering-grade, apply these industry-standard techniques:
+
+- **Mutation testing** (the only direct measure of test QUALITY): deliberately
+  break the code (mutants) and verify the suite FAILS. Surviving mutants mean
+  weak assertions or dead code. Tools: mutmut / cosmic-ray (Python), Stryker
+  (JS/TS), PIT (Java). Target mutation score >= 70%; triage every survivor.
+- **Property-based testing / fuzzing**: generate hundreds of random inputs and
+  assert invariants, finding edge cases a human would never write. Mandatory
+  for parsers, serializers, and anything branching on input shape. Tools:
+  hypothesis (Python), fast-check (JS), libFuzzer/AFL for C-family.
+- **Static analysis as an additional oracle**: linters and type checkers catch
+  bug classes tests cannot reach (type errors, unreachable branches, unused
+  state). Python: ruff + mypy; TS: eslint + tsc; Rust: clippy. A suite is not
+  "done" until these are clean or findings are explicitly waived.
+- **Security lint**: bandit (Python), pip-audit / npm audit. Run on auth,
+  upload, and any input-handling path.
+- **Fault injection / error-path forcing**: deliberately break dependencies
+  (mock raises, DB down, network timeout) and assert the system degrades or
+  rolls back AS DESIGNED - not merely that it raises.
+- **Risk-based prioritization**: allocate test depth by risk x change
+  frequency. New/changed code gets the deepest treatment; stable leaf code
+  needs less.
+
+### 5. Use existing tools, not only hand-written code
+
+Hand-written tests cannot measure their own quality. Prefer battle-tested
+tooling over ad-hoc verification scripts: mutation runners, fuzzers, linters,
+type checkers, E2E frameworks (Playwright/Selenium), and MCP servers where the
+environment supports them (e.g. Playwright MCP for browser E2E). If a needed
+tool is not installed, install it into the project's dev environment and add
+it to dev-only dependencies - do not declare it out of scope. If a tool cannot
+be installed in the current environment, say so explicitly and record it in
+the gap report instead of silently skipping.
+
 ## Adapt to the user's situation (do NOT hardcode pytest)
 
 Detect the project's language and test framework BEFORE writing anything. Look at
@@ -106,9 +144,18 @@ categories ran, coverage if available, and any failure with actual vs expected.
 Iterate until green - fix the test only when the test is wrong; otherwise flag the
 code bug to the user.
 
+Definition of "verified" (all three, honestly reported):
+1. Suite green with real oracles, branch coverage met (default >= 85% of
+   in-scope modules).
+2. Static analysis (linter + type checker) clean or findings explicitly waived
+   with reasons.
+3. For high-risk logic (parsing, auth, money, migration): mutation testing or
+   property-based testing applied, or the omission justified in the gap report.
+
 ### Step 7 - Self-check / gap report
-State explicitly what is still untested and why, and suggest the next tests to
-add. This step is required, not optional.
+State explicitly what is still untested and why (including which defect-escape
+tools from section 4 were NOT applied and the cost/benefit reason), and suggest
+the next tests to add. This step is required, not optional.
 
 ## Guardrails
 

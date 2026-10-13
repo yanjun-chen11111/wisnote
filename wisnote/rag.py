@@ -335,7 +335,7 @@ def stream_ask(
                 pass
         # 长对话记忆：消息过多时自动把更早的对话压缩为摘要
         try:
-            from wisnote.chat import compress_history, get_messages
+            from wisnote.chat import compress_history
             if len(get_messages(session_id)) > AUTO_COMPRESS_THRESHOLD:
                 compress_history(session_id)
         except Exception:
