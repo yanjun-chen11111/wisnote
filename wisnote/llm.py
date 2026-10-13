@@ -74,28 +74,46 @@ def chat(
 
 
 def _clean_stream(chunks):
-    """过滤流式输出中可能混入的 <think>…<think> 内容"""
+    """过滤流式输出中可能混入的思考链内容；正常内容必须逐段即时透传
+
+    修复记录：早期版本在"未出现 think 标记"的常态下把内容攒到流结束
+    才一次性 yield（E2E 实测 chunk数=1 暴露），导致所谓流式从未生效。
+    现在只保留"标记长度-1"的尾巴防止标记被拆在两个 chunk 交界，
+    其余内容到达即透传。
+
+    标记字面量统一从 _THINK_RE 的 pattern 运行时提取，不在代码里重复手写。
+    """
+    open_tag, _, close_tag = _THINK_RE.pattern.partition(".*?")
+    keep = max(len(open_tag), len(close_tag)) - 1
+
     buf = ""
     in_think = False
     for c in chunks:
         buf += c
         while True:
             if in_think:
-                end = buf.find("</think>")
-                if end == -1:
-                    buf = ""
-                    break
-                buf = buf[end + len("</think>"):]
-                in_think = False
-                continue
-            start = buf.find("<think>")
-            if start == -1:
+                end = buf.find(close_tag)
+                if end != -1:
+                    buf = buf[end + len(close_tag):]
+                    in_think = False
+                    continue
+                # 思考内容：丢弃，只保留末尾可能是半个闭标记的尾巴
+                buf = buf[-keep:] if keep and len(buf) > keep else buf
                 break
-            head = buf[:start]
-            buf = buf[start + len("<think>"):]
-            in_think = True
-            if head:
-                yield head
+            start = buf.find(open_tag)
+            if start != -1:
+                head = buf[:start]
+                buf = buf[start + len(open_tag):]
+                in_think = True
+                if head:
+                    yield head
+                continue
+            # 无标记：立即透传安全前缀，只留防分裂尾巴
+            if len(buf) > keep:
+                yield buf[:-keep]
+                buf = buf[-keep:]
+            break
+
     if not in_think and buf:
         yield buf
 

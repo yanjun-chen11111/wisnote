@@ -25,10 +25,10 @@ from wisnote import auth
 from wisnote.chat import create_session, get_messages, list_sessions, search_history
 from wisnote.config import SUPPORTED_EXTS
 from wisnote.db import init_db
-from wisnote.ingest import ingest_document, list_documents
 from wisnote.explain import EXPLAIN_MODES, list_modes, stream_explain
+from wisnote.ingest import ingest_document, list_documents
 from wisnote.llm import LLMError, has_model, ping, warmup
-from wisnote.rag import ask, format_answer
+from wisnote.rag import format_answer, stream_ask
 
 init_db()
 
@@ -84,14 +84,26 @@ def do_upload() -> None:
 def do_ask(question: str) -> None:
     uid = require_login()
     sid = ensure_session()
-    print("\n正在检索并生成回答（CPU 首次推理约 10~30 秒）...")
+    print("\n正在检索并生成回答（流式输出，CPU 首次推理前有约 10~30 秒静默属正常）...")
+    holder: dict = {}
+    parts: list[str] = []
     try:
-        result = ask(uid, question, session_id=sid)
+        for chunk in stream_ask(uid, question, session_id=sid, result_holder=holder):
+            parts.append(chunk)
+            print(chunk, end="", flush=True)
     except LLMError as e:
-        print(f"模型调用失败：{e}")
+        print(f"\n模型调用失败：{e}")
         return
     print()
-    print(format_answer(result))
+    # 溯源显示（与 UI 一致：有资料来源时列出）
+    sources = holder.get("sources") or []
+    if sources:
+        print("\n引用来源：")
+        for s in sources:
+            loc = f"第{s['page']}页" if s["page"] else "无页码"
+            if s["para_index"] is not None:
+                loc += f" 第{s['para_index']}段"
+            print(f"  [{s['index']}] {s['title']} | {loc} | 相似度 {s['similarity']}")
     print()
 
 
