@@ -10,7 +10,7 @@
 """
 
 from wisnote.config import SEARCH_TOP_K
-from wisnote.llm import chat, chat_stream
+from wisnote.llm import chat_stream
 from wisnote.rag import build_context, build_sources
 from wisnote.search import search_notes
 
@@ -167,54 +167,3 @@ def stream_explain(
         from wisnote.chat import add_message
         add_message(session_id, "user", f"[{label}] 请讲解：{topic}")
         add_message(session_id, "assistant", prefix + "".join(full), sources=sources)
-
-
-def explain(
-    user_id: int,
-    topic: str,
-    mode: str = "plain",
-    top_k: int = SEARCH_TOP_K,
-    session_id: int | None = None,
-    save: bool = True,
-    min_similarity: float = 0.30,
-) -> dict:
-    """生成知识点讲解
-
-    返回：{"topic", "mode", "mode_label", "content", "sources", "from_llm"}
-    """
-    topic = topic.strip()
-    if not topic:
-        raise ValueError("讲解主题不能为空")
-    if mode not in EXPLAIN_MODES:
-        raise ValueError(f"未知讲解模式：{mode}，可选：{list(EXPLAIN_MODES)}")
-
-    hits = search_notes(user_id, topic, top_k)
-    sources = build_sources(hits)
-
-    if not hits or hits[0].get("similarity", 0.0) < min_similarity:
-        result = {
-            "topic": topic,
-            "mode": mode,
-            "mode_label": EXPLAIN_MODES[mode]["label"],
-            "content": NO_MATERIAL.format(topic),
-            "sources": [],
-            "from_llm": False,
-        }
-    else:
-        from wisnote.ingest import bump_ref_counts
-        bump_ref_counts({h.get("document_id") for h in hits})
-        content = chat(build_messages(topic, mode, hits))
-        result = {
-            "topic": topic,
-            "mode": mode,
-            "mode_label": EXPLAIN_MODES[mode]["label"],
-            "content": content,
-            "sources": sources,
-            "from_llm": True,
-        }
-
-    if session_id and save:
-        from wisnote.chat import add_message
-        add_message(session_id, "user", f"[{result['mode_label']}] 请讲解：{topic}")
-        add_message(session_id, "assistant", result["content"], sources=result["sources"])
-    return result

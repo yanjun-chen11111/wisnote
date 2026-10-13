@@ -153,7 +153,7 @@ def main() -> None:
             print(f"  [{flag}] ({cat:<9}) {q}")
             print(f"        语义:Top{r1 or '-'}  |  BM25:Top{r2 or '-'}")
             w.writerow([q, cat, r1 or "", r2 or ""])
-    print(f"\n逐题明细已导出：eval/results_detail.csv")
+    print("\n逐题明细已导出：eval/results_detail.csv")
 
     print(f"\n负例测试（语义检索最高相似度应 < {IRRELEVANT_THRESHOLD}）：")
     for q in negatives:

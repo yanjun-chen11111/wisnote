@@ -6,11 +6,10 @@
 3. 检索不到相关内容时直接说明，不猜测（防幻觉）。
 """
 
-import json
 
 from wisnote.chat import auto_name_session, build_context_messages, get_messages
 from wisnote.config import AUTO_COMPRESS_THRESHOLD, SEARCH_TOP_K
-from wisnote.llm import LLMError, chat, chat_stream
+from wisnote.llm import chat, chat_stream
 from wisnote.search import search_notes
 
 SYSTEM_PROMPT = """你是"智能笔记助手"，只根据用户自己的笔记内容回答问题。

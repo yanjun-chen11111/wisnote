@@ -26,10 +26,6 @@ pip install -r requirements.txt
 .venv\Scripts\python.exe -m streamlit run ui/app.py
 ```
 
-> 注意：若直接运行 `streamlit`（不带脚本参数），浏览器会打开 Streamlit 官方欢迎页并提示
-> `streamlit run yourscript.py`——`yourscript.py` 只是官方示例占位符，并非项目文件。
-> 本项目的入口是 `ui/app.py`，请始终用上面完整命令或 `run_app.bat` 启动。
-
 ## 运行测试
 
 ```powershell

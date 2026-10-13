@@ -6,7 +6,6 @@
 
 import os
 import threading
-from pathlib import Path
 
 # HuggingFace 国内镜像（必须在 sentence-transformers 导入前设置，
 # 否则首次下载 bge-small 模型会因 huggingface.co 被墙而失败）

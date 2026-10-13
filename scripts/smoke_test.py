@@ -69,7 +69,7 @@ def main() -> None:
         pass
     user = auth.login(TEST_USER, TEST_PASS)
     assert auth.get_user_by_token(user["token"]) is not None
-    print(f"[1] 登录成功，会话 token 有效")
+    print("[1] 登录成功，会话 token 有效")
     uid = user["user_id"]
 
     # 1.5 清理历史测试数据，保证重复运行结果一致

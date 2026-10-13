@@ -147,7 +147,7 @@ def main() -> None:
 
     print(f"\n最优组合：CHUNK_SIZE={best['size']}  CHUNK_OVERLAP={best['overlap']}  "
           f"(MRR={best['MRR']:.3f}, Recall@5={best['Recall@5']:.1%})")
-    print(f"结果已导出：eval/results_params.csv")
+    print("结果已导出：eval/results_params.csv")
     print("注意：并列最优时优先选块数适中（500上下）的组合，避免极端值过拟合小语料。")
 
 

@@ -26,7 +26,7 @@ from wisnote.chat import create_session, get_messages, list_sessions, search_his
 from wisnote.config import SUPPORTED_EXTS
 from wisnote.db import init_db
 from wisnote.ingest import ingest_document, list_documents
-from wisnote.explain import EXPLAIN_MODES, explain, list_modes
+from wisnote.explain import EXPLAIN_MODES, list_modes, stream_explain
 from wisnote.llm import LLMError, has_model, ping, warmup
 from wisnote.rag import ask, format_answer
 
@@ -109,14 +109,35 @@ def do_explain() -> None:
         mode = keys[int(pick) - 1][0]
     except (ValueError, IndexError):
         mode = keys[0][0]
-    print(f"\n[{EXPLAIN_MODES[mode]['label']}] 正在生成讲解（CPU 约 20~60 秒）...")
+    source_labels = {
+        "auto": "笔记优先（有笔记结合讲，没有则用模型知识）",
+        "notes": "只用笔记（最严谨，可溯源）",
+        "llm": "只用模型知识（不查笔记）",
+    }
+    print("讲解依据：")
+    for i, key in enumerate(source_labels, start=1):
+        print(f"  {i}. {source_labels[key]}（{key}）")
+    spick = input("选择（默认1）：").strip() or "1"
     try:
-        r = explain(user["user_id"], topic, mode=mode, session_id=ensure_session())
+        source = list(source_labels)[int(spick) - 1]
+    except (ValueError, IndexError):
+        source = "auto"
+    print(f"\n[{EXPLAIN_MODES[mode]['label']}] 正在生成讲解（CPU 约 20~60 秒）...")
+    holder: dict = {}
+    try:
+        parts = []
+        for chunk in stream_explain(
+            user["user_id"], topic, mode=mode,
+            session_id=ensure_session(), result_holder=holder, source=source,
+        ):
+            parts.append(chunk)
+            print(chunk, end="", flush=True)
+        print()
     except LLMError as e:
-        print(f"模型调用失败：{e}")
+        print(f"\n模型调用失败：{e}")
         return
     print()
-    print(format_answer({"answer": r["content"], "sources": r["sources"]}))
+    print(format_answer({"answer": "", "sources": holder.get("sources", [])}))
     print()
 
 
@@ -208,7 +229,7 @@ def main() -> None:
         elif raw.startswith("/open"):
             do_open(raw[5:].strip())
         elif raw == "/new":
-            session_id = None
+            user["session_id"] = None
             ensure_session()
             print("已新建会话")
         elif raw == "/hist":

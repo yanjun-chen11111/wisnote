@@ -1,0 +1,11 @@
+[tool.ruff]
+target-version = "py313"
+
+# bandit 豁免（均经人工复核，理由如下；CLI 不会读此文件，扫描命令需带 --skip B310,B608）：
+# B310 urlopen：wisnote/llm.py 仅访问固定本机 Ollama 地址（OLLAMA_HOST），
+#   不存在用户可控 URL 的 SSRF 面；llm.py:155/165 为健康检查固定路径。
+# B608 SQL 拼接：wisnote/search.py:25 的拼接内容是 "?, ?, ?" 占位符串，
+#   用户值全部经参数化传入，无注入面。
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

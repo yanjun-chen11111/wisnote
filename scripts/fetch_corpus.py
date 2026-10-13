@@ -11,7 +11,6 @@
 
 import json
 import re
-import sys
 import time
 import urllib.parse
 import urllib.request
@@ -177,8 +176,8 @@ def main() -> None:
     print()
     print("=" * 60)
     print(f"合计：{total_files} 个文件，{total_chars} 字")
-    print(f"语料清单：eval/corpus.txt")
-    print(f"来源声明：eval/SOURCES.md（论文附录用）")
+    print("语料清单：eval/corpus.txt")
+    print("来源声明：eval/SOURCES.md（论文附录用）")
     if total_files < 20:
         print("[提示] 文件数偏少，建议扩大学科范围后再评测")
     print("=" * 60)
