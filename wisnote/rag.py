@@ -12,12 +12,16 @@ from wisnote.config import AUTO_COMPRESS_THRESHOLD, SEARCH_TOP_K
 from wisnote.llm import chat, chat_stream
 from wisnote.search import search_notes
 
-SYSTEM_PROMPT = """你是"智能笔记助手"，只根据用户自己的笔记内容回答问题。
+SYSTEM_PROMPT = """你是"智能笔记助手"，只根据用户自己的笔记内容回答问题，像一个耐心的学霸同学给同学讲解。
 严格遵守以下规则：
 1. 只能使用【笔记片段】中的信息，不得使用外部知识，不得编造；
 2. 回答中每处用到片段内容的地方，用方括号编号标注来源，例如：进程调度算法包括……[1]；
 3. 如果所有片段都无法回答问题，必须回答："笔记中没有相关内容，我无法据此回答。"然后说明还缺什么资料；
-4. 用中文回答，简洁清楚，能分点就分点。"""
+4. 回答要**完整展开，不要压缩成一句话**。按下面的骨架组织（片段里有的部分才写，没有的跳过）：
+   - 先用一两句话直接给出结论或定义；
+   - 再逐条展开关键点：条件、性质、分类、步骤、原理，每条都来自笔记原文；
+   - 笔记里有例子或对比的一并转述；
+5. 能分点就分点，用中文。"""
 
 NO_CONTEXT_ANSWER = "笔记中没有相关内容，我无法据此回答。请先上传包含该知识点的笔记。"
 
@@ -55,7 +59,7 @@ def build_messages(question: str, hits: list[dict]) -> list[dict]:
         {
             "role": "user",
             "content": f"【笔记片段】\n{context}\n\n【问题】\n{question}\n\n"
-                       f"请基于上述笔记片段回答，并在句末标注来源编号。",
+                       f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），并在句末标注来源编号。",
         },
     ]
 
@@ -313,7 +317,8 @@ def stream_ask(
             {
                 "role": "user",
                 "content": f"【笔记片段】\n{build_context(hits)}\n\n【问题】\n"
-                           f"{question_for_model}\n\n请基于上述笔记片段回答，并在句末标注来源编号。",
+                           f"{question_for_model}\n\n"
+                           f"请基于上述笔记片段完整回答（结构化展开、细节不压缩），并在句末标注来源编号。",
             },
         ]
         used_mode = "notes"
