@@ -11,7 +11,7 @@
 
 from wisnote.config import SEARCH_TOP_K
 from wisnote.llm import chat_stream
-from wisnote.rag import build_context, build_sources
+from wisnote.rag import build_context, build_sources, max_semantic_similarity
 from wisnote.search import search_notes
 
 # 依据笔记讲解时的约束（可溯源）
@@ -126,7 +126,7 @@ def stream_explain(
 
     label = EXPLAIN_MODES[mode]["label"]
     hits = [] if source == "llm" else search_notes(user_id, topic, top_k)
-    has_material = bool(hits) and hits[0].get("similarity", 0.0) >= min_similarity
+    has_material = bool(hits) and max_semantic_similarity(hits) >= min_similarity
 
     # 严格模式且无资料：不调用模型，直接说明
     if source == "notes" and not has_material:

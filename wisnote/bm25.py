@@ -1,7 +1,8 @@
-"""BM25 关键词检索（RAG 对比实验的 baseline）
+"""BM25 关键词检索（Okapi BM25，k1=1.5, b=0.75，中文分词用 jieba）
 
-Okapi BM25（k1=1.5, b=0.75），中文分词用 jieba。
-仅用于实验对比，不参与产品主流程。
+用途：与语义向量检索做 RRF 融合（见 wisnote/hybrid.py），
+弥补向量检索在专有名词 / ID / 缩写等"字面精确匹配"场景的漏检。
+也可单独作为评测基线（scripts/eval_retrieval.py）。
 """
 
 import math
@@ -18,7 +19,7 @@ class BM25Index:
         conn = get_conn()
         try:
             rows = conn.execute(
-                "SELECT id, document_id, page, para_index, text FROM chunks "
+                "SELECT id, document_id, chunk_index, page, para_index, text FROM chunks "
                 "WHERE user_id = ? ORDER BY id",
                 (user_id,),
             ).fetchall()
@@ -69,6 +70,7 @@ class BM25Index:
                     "text": d["text"],
                     "score": scores[i],
                     "document_id": d["document_id"],
+                    "chunk_index": d["chunk_index"],
                     "page": d["page"],
                     "para_index": d["para_index"],
                     "chunk_id": f"chunk{d['id']}",

@@ -60,6 +60,16 @@ def build_messages(question: str, hits: list[dict]) -> list[dict]:
     ]
 
 
+def max_semantic_similarity(hits: list[dict]) -> float:
+    """全部命中中的最高语义相似度（防幻觉闸门专用）
+
+    混合检索的排序依据是 RRF 融合分，Top1 未必是语义上最相关的 chunk，
+    闸门必须取全部命中的最高语义相似度，保持原有阈值语义不变；
+    仅 BM25 命中的 chunk（无语义相似度）计为 0.0，不会抬升闸门。
+    """
+    return max((h.get("similarity", 0.0) for h in hits), default=0.0)
+
+
 def ask(
     user_id: int,
     question: str,
@@ -81,8 +91,8 @@ def ask(
     hits = search_notes(user_id, question, top_k)
     sources = build_sources(hits)
 
-    # 防幻觉闸门：检索不到、或相似度过低，不交给大模型
-    if not hits or (hits[0].get("similarity", 0.0) < min_similarity):
+    # 防幻觉闸门：检索不到、或最高语义相似度过低，不交给大模型
+    if not hits or (max_semantic_similarity(hits) < min_similarity):
         result = {
             "question": question,
             "answer": NO_CONTEXT_ANSWER,
@@ -185,7 +195,7 @@ def auto_ask(
         raise ValueError("问题不能为空")
 
     hits = search_notes(user_id, question, top_k)
-    if hits and hits[0].get("similarity", 0.0) >= min_similarity:
+    if hits and max_semantic_similarity(hits) >= min_similarity:
         from wisnote.ingest import bump_ref_counts
         bump_ref_counts({h.get("document_id") for h in hits})
         answer = chat(build_messages(question, hits))
@@ -263,7 +273,7 @@ def stream_ask(
     hits = search_notes(user_id, search_query, SEARCH_TOP_K) if mode in ("notes", "auto") else []
 
     if mode == "notes":
-        if not hits or hits[0].get("similarity", 0.0) < min_similarity:
+        if not hits or max_semantic_similarity(hits) < min_similarity:
             if result_holder is not None:
                 result_holder.update({"sources": [], "mode": "notes", "hits": hits, "refused": True})
             yield NO_CONTEXT_ANSWER
@@ -272,7 +282,7 @@ def stream_ask(
             return
         use_notes = True
     elif mode == "auto":
-        use_notes = bool(hits) and hits[0].get("similarity", 0.0) >= min_similarity
+        use_notes = bool(hits) and max_semantic_similarity(hits) >= min_similarity
     else:
         use_notes = False
 

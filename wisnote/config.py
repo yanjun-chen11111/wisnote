@@ -37,6 +37,10 @@ LLM_OPTIONS = {
 # 语义检索默认返回条数
 SEARCH_TOP_K = 5
 
+# 混合检索（BM25 关键词 + 语义向量，RRF 倒数排名融合）
+HYBRID_RETRIEVAL = True   # search_notes 是否融合 BM25（False 则回退纯语义）
+RRF_K = 60                # RRF 平滑常数，业界默认值（Elasticsearch/LangChain 同款）
+
 # 登录令牌有效期（小时）：过期必须重新登录。
 # 令牌存在网址参数里可能被他人看到，设置较短的有效期可限制风险。
 SESSION_TTL_HOURS = 12

@@ -1,16 +1,33 @@
-"""语义检索：在用户自己的笔记中搜索与问题相关的片段"""
+"""混合检索：语义向量 + BM25 关键词（RRF 融合），带文档溯源信息"""
 
-from wisnote.config import SEARCH_TOP_K
+from wisnote.config import HYBRID_RETRIEVAL, SEARCH_TOP_K
 from wisnote.db import get_conn
+from wisnote.hybrid import hybrid_search
 from wisnote.vectorstore import get_store
 
 
-def search_notes(user_id: int, query: str, top_k: int = SEARCH_TOP_K) -> list[dict]:
-    """语义搜索，返回按相似度排序的结果，附带文档标题等溯源信息"""
+def search_notes(
+    user_id: int,
+    query: str,
+    top_k: int = SEARCH_TOP_K,
+    hybrid: bool | None = None,
+) -> list[dict]:
+    """检索用户笔记，返回按相关度排序的结果，附带文档标题等溯源信息
+
+    - hybrid=True（默认，由 config.HYBRID_RETRIEVAL 决定）：
+      语义 + BM25 的 RRF 融合结果，专有名词/ID 等字面 query 不再漏检；
+    - hybrid=False：纯语义检索（评测脚本用作基线）。
+    """
     query = query.strip()
     if not query:
         return []
-    hits = get_store().search(user_id, query, top_k)
+    if hybrid is None:
+        hybrid = HYBRID_RETRIEVAL
+
+    if hybrid:
+        hits = hybrid_search(user_id, query, top_k)
+    else:
+        hits = get_store().search(user_id, query, top_k)
     if not hits:
         return []
 

@@ -13,8 +13,8 @@ os.environ.setdefault("HF_ENDPOINT", "https://hf-mirror.com")
 
 import chromadb
 
-from wisnote.config import CHROMA_DIR, EMBEDDING_MODEL, ensure_dirs
 from wisnote.chunker import Chunk
+from wisnote.config import CHROMA_DIR, EMBEDDING_MODEL, ensure_dirs
 
 
 class VectorStore:
@@ -94,6 +94,7 @@ class VectorStore:
                     "text": res["documents"][0][i],
                     "similarity": 1.0 - (res["distances"][0][i]),  # cosine 距离 → 相似度
                     "document_id": meta.get("document_id"),
+                    "chunk_index": meta.get("chunk_index"),
                     "page": meta.get("page"),
                     "para_index": meta.get("para_index"),
                 }

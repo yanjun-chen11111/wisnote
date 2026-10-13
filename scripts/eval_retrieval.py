@@ -1,12 +1,12 @@
-"""检索质量评测（完整版）：语义检索 vs BM25 基线 + gold set 命中率 + 负例对照
+"""检索质量评测（完整版）：语义检索 vs BM25 基线 vs 混合RRF + gold set 命中率 + 负例对照
 
 流程：
   1. 以专用评测账号登录，按 eval/corpus.txt 重建评测语料（用当前 config 的切块参数）；
   2. 逐条读取 eval/goldset.csv 的标注（literal 字面题 / paraphrase 改写题 / negative 负例）；
-  3. 两种方法各取 Top-5，记录命中排名；
+  3. 三种方法各取 Top-5，记录命中排名（语义=hybrid=False 基线；混合=产品默认管线）；
   4. 输出 总体 + 分类 的 Recall@1/3/5、MRR 对比表；
   5. 逐题明细导出 eval/results_detail.csv；
-  6. 负例：无关问题语义检索的最高相似度应 < 0.4。
+  6. 负例：无关问题在混合检索下最高语义相似度应 < 0.4（防幻觉闸门有效）。
 
 指标定义（论文可引用）：
   Recall@K = 命中排名 ≤ K 的问题数 / 总题数
@@ -25,8 +25,9 @@ sys.path.insert(0, str(ROOT))
 
 from wisnote import auth
 from wisnote.bm25 import BM25Index
-from wisnote.config import CHUNK_SIZE, CHUNK_OVERLAP
+from wisnote.config import CHUNK_OVERLAP, CHUNK_SIZE
 from wisnote.ingest import delete_document, ingest_document, list_documents
+from wisnote.rag import max_semantic_similarity
 from wisnote.search import search_notes
 
 EVAL_DIR = ROOT / "eval"
@@ -97,13 +98,17 @@ def metrics_from_ranks(ranks: list) -> dict:
     }
 
 
-def print_metric_table(title: str, sem_m: dict, bm_m: dict) -> None:
+def print_metric_table(title: str, methods: list[tuple[str, dict]]) -> None:
+    """指标对比表：methods = [(方法名, 指标dict), ...]"""
     print(title)
-    print(f"{'指标':<10}{'语义检索(bge)':>18}{'BM25关键词':>16}")
-    print("-" * 50)
+    header = f"{'指标':<10}" + "".join(f"{name:>18}" for name, _ in methods)
+    print(header)
+    print("-" * (10 + 18 * len(methods)))
     for key in ("Recall@1", "Recall@3", "Recall@5"):
-        print(f"{key:<10}{sem_m[key]:>15.1%}{bm_m[key]:>15.1%}")
-    print(f"{'MRR':<10}{sem_m['MRR']:>15.3f}{bm_m['MRR']:>15.3f}")
+        row = f"{key:<10}" + "".join(f"{m[key]:>17.1%}" for _, m in methods)
+        print(row)
+    row = f"{'MRR':<10}" + "".join(f"{m['MRR']:>17.3f}" for _, m in methods)
+    print(row)
     print()
 
 
@@ -123,13 +128,17 @@ def main() -> None:
           f"负例 {len(negatives)} 题\n")
 
     bm25 = BM25Index(uid)
-    sem_ranks = run_retrieval(lambda q: search_notes(uid, q, TOP_K), cases)
+    sem_ranks = run_retrieval(lambda q: search_notes(uid, q, TOP_K, hybrid=False), cases)
     bm_ranks = run_retrieval(lambda q: bm25.search(q, TOP_K), cases)
+    hyb_ranks = run_retrieval(lambda q: search_notes(uid, q, TOP_K, hybrid=True), cases)
 
     print_metric_table(
         "【总体】",
-        metrics_from_ranks(sem_ranks),
-        metrics_from_ranks(bm_ranks),
+        [
+            ("语义检索(bge)", metrics_from_ranks(sem_ranks)),
+            ("BM25关键词", metrics_from_ranks(bm_ranks)),
+            ("混合RRF", metrics_from_ranks(hyb_ranks)),
+        ],
     )
     for cat, title in (
         ("literal", "【字面题】问题中含原文术语"),
@@ -140,27 +149,30 @@ def main() -> None:
             continue
         print_metric_table(
             f"{title}（{len(idx)}题）",
-            metrics_from_ranks([sem_ranks[i] for i in idx]),
-            metrics_from_ranks([bm_ranks[i] for i in idx]),
+            [
+                ("语义检索(bge)", metrics_from_ranks([sem_ranks[i] for i in idx])),
+                ("BM25关键词", metrics_from_ranks([bm_ranks[i] for i in idx])),
+                ("混合RRF", metrics_from_ranks([hyb_ranks[i] for i in idx])),
+            ],
         )
 
-    print("逐题明细（√=语义检索命中；- = 未命中）：")
+    print("逐题明细（√=混合检索命中；- = 未命中）：")
     with open(DETAIL_OUT, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["question", "category", "semantic_rank", "bm25_rank"])
-        for (q, _kws, cat), r1, r2 in zip(cases, sem_ranks, bm_ranks):
-            flag = "√" if r1 else "×"
+        w.writerow(["question", "category", "semantic_rank", "bm25_rank", "hybrid_rank"])
+        for (q, _kws, cat), r1, r2, r3 in zip(cases, sem_ranks, bm_ranks, hyb_ranks):
+            flag = "√" if r3 else "×"
             print(f"  [{flag}] ({cat:<9}) {q}")
-            print(f"        语义:Top{r1 or '-'}  |  BM25:Top{r2 or '-'}")
-            w.writerow([q, cat, r1 or "", r2 or ""])
+            print(f"        语义:Top{r1 or '-'}  |  BM25:Top{r2 or '-'}  |  混合:Top{r3 or '-'}")
+            w.writerow([q, cat, r1 or "", r2 or "", r3 or ""])
     print("\n逐题明细已导出：eval/results_detail.csv")
 
-    print(f"\n负例测试（语义检索最高相似度应 < {IRRELEVANT_THRESHOLD}）：")
+    print(f"\n负例测试（混合检索下最高语义相似度应 < {IRRELEVANT_THRESHOLD}，闸门可拒答）：")
     for q in negatives:
-        results = search_notes(uid, q, top_k=3)
-        mx = max((h["similarity"] for h in results), default=0.0)
+        results = search_notes(uid, q, top_k=3)  # 默认混合管线，即产品实际路径
+        mx = max_semantic_similarity(results)
         ok = "通过" if mx < IRRELEVANT_THRESHOLD else "偏高，需关注"
-        print(f"  {q}  最高相似度={mx:.3f}  [{ok}]")
+        print(f"  {q}  最高语义相似度={mx:.3f}  [{ok}]")
 
     auth.logout(user["token"])
     print("\n评测完成。以上对比表 + 明细 CSV 可直接用于论文实验章节。")
