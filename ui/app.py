@@ -82,45 +82,52 @@ for key in ("user", "session_id", "doc_id"):
     if key not in st.session_state:
         st.session_state[key] = None
 
-# ---------- 登录令牌存储方式（选项 B：sessionStorage，标签页级） ----------
-# 令牌只存于浏览器 sessionStorage（按标签页隔离，刷新保留、关标签页/浏览器失效）：
-#   刷新页面        → 保留（同一标签页）
-#   关闭标签页      → 失效，需重新登录
-#   关闭浏览器      → 失效，需重新登录
-# 不出现在地址栏、不写磁盘。读取由自建组件回传（每次渲染都回传当前值），
-# 首帧未回传时强制重跑一次以确保可靠拿到令牌。
+# ---------- 登录令牌存储方式（会话 Cookie，浏览器级） ----------
+# 令牌存于浏览器会话 Cookie（无过期时间 → 浏览器关闭即失效）：
+#   刷新页面 / 关标签页再开（浏览器未关）→ 保持登录
+#   关闭浏览器                                 → 失效，需重新登录
+# 不出现在地址栏、不写磁盘。
+# 实现依据（E2E 实测）：旧自建 sessionStorage 组件在新版 Streamlit 下
+# 握手超时（Custom Component timeout error），render 事件从未送达，
+# 令牌从未写入浏览器 → 刷新必掉线。现改用官方 API：
+#   读：st.context.cookies（随页面请求同步带来，无组件回传时序问题）
+#   写/清：st.components.v1.html 注入 JS 操作 document.cookie（无需握手）
 TOKEN_KEY = "wisnote_token"
-
-_token_component = components.declare_component(
-    "wisnote_token_store", path=str(Path(__file__).parent / "wisnote_cookie_component")
-)
 
 
 def _write_token(value: str) -> None:
+    """把令牌写入会话 Cookie（JS 写入，浏览器关闭自动失效）"""
     try:
-        _token_component(method="set", value=value, name=TOKEN_KEY, key="wisnote_token")
+        components.html(
+            f"<script>document.cookie='{TOKEN_KEY}={value}; path=/; SameSite=Lax';</script>",
+            height=0,
+        )
     except Exception:
         pass
 
 
 def _clear_token() -> None:
+    """清除令牌 Cookie（置为过去过期时间）"""
     try:
-        _token_component(method="clear", name=TOKEN_KEY, key="wisnote_token")
+        components.html(
+            f"<script>document.cookie='{TOKEN_KEY}=; path=/; Max-Age=0; SameSite=Lax';</script>",
+            height=0,
+        )
     except Exception:
         pass
 
 
 def _read_token() -> str | None:
-    """从 sessionStorage 读取令牌（组件每次渲染都回传当前值）"""
+    """从本次请求的 Cookie 中同步读取令牌（官方 API，无时序问题）"""
     try:
-        v = _token_component(method="get", name=TOKEN_KEY, key="wisnote_token", default="")
+        v = st.context.cookies.get(TOKEN_KEY)
         return v or None
     except Exception:
         return None
 
 
 def persist_login(token: str) -> None:
-    """登录成功：令牌写入 sessionStorage，并清理遗留的地址栏参数"""
+    """登录成功：令牌写入会话 Cookie，并清理遗留的地址栏参数"""
     _write_token(token)
     try:
         st.query_params.clear()
@@ -129,7 +136,7 @@ def persist_login(token: str) -> None:
 
 
 def clear_login() -> None:
-    """退出登录：清除 sessionStorage 与网址参数"""
+    """退出登录：清除令牌 Cookie 与网址参数"""
     _clear_token()
     try:
         st.query_params.clear()
@@ -138,7 +145,7 @@ def clear_login() -> None:
 
 
 def try_restore_session() -> None:
-    """刷新后恢复登录：从 sessionStorage 取令牌"""
+    """刷新后恢复登录：从请求 Cookie 同步取令牌（无需等待组件回传）"""
     if st.session_state.user is not None:
         return
     token = _read_token()
@@ -153,11 +160,9 @@ def try_restore_session() -> None:
                 "user_id": u["user_id"],
                 "username": u["username"],
             }
-            return
-    # 首帧组件可能尚未回传令牌：强制重跑一次以可靠恢复（仅一次，防死循环）
-    if not st.session_state.get("_restore_tried"):
-        st.session_state["_restore_tried"] = True
-        st.rerun()
+        else:
+            # Cookie 里的令牌已过期/吊销：清掉避免每次请求都校验失败
+            _clear_token()
 
 
 try_restore_session()
@@ -776,7 +781,7 @@ def main() -> None:
             st.error("Ollama 未就绪：请先 `ollama serve` 并确保 `qwen3:1.7b` 已下载")
         with st.expander("🔒 账号安全"):
             if _read_token() == st.session_state.user.get("token"):
-                st.caption("令牌存储：**sessionStorage（标签页级）**（刷新保持、关标签页/浏览器需重登，地址栏干净 ✅）")
+                st.caption("令牌存储：**会话 Cookie（浏览器级）**（刷新保持、关浏览器需重登，地址栏干净 ✅）")
             else:
                 st.caption("令牌存储：**暂未读到**（请刷新或重新登录）")
             sessions = auth.list_active_sessions(st.session_state.user["user_id"])
